@@ -11,13 +11,31 @@ public class GamePiece : MonoBehaviour
     private GridController.Type _Type;
     private GridController.Colour _Colour;
 
+    public MeshRenderer Mat;
+
+    public bool moveable;
+    public bool clearable;
     public int XPos
     {
         get { return _Xpos; }
+        set
+        {
+            if(moveable)
+            {
+                _Xpos = value;
+            }
+        }
     }
     public int YPos
     {
         get { return _Ypos; }
+        set
+        {
+            if (moveable)
+            {
+                _Ypos = value;
+            }
+        }
     }
 
     public GridController Grid
@@ -36,8 +54,7 @@ public class GamePiece : MonoBehaviour
     }
 
 
-    public bool moveable;
-    public bool clearable;
+
 
     // Start is called before the first frame update
     void Start()
@@ -58,5 +75,14 @@ public class GamePiece : MonoBehaviour
         _Grid = grid;
         _Type = type;
         _Colour = colour;
+    }
+
+    public void Move(int NewX, int NewY)
+    {
+       
+        _Xpos = NewX;
+        _Ypos = NewY;
+        this.transform.localPosition = Grid.Worldposition(NewX, NewY);
+        
     }
 }

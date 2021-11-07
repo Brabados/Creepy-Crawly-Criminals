@@ -67,7 +67,6 @@ public class GridController : MonoBehaviour
       
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         //Storage for each gamepiece. May modify for prebuilt levels
@@ -112,10 +111,18 @@ public class GridController : MonoBehaviour
             for (int j = 0; j < Ysize; j++)
             {
                 //Instanciates an instance of each space and puts it in the correct location on screen with offset
-                GameObject Tile = (GameObject)Instantiate(TypeDictionary[Type.FLY], new Vector3(i + (i * 3), j + (j * 3), 0), Quaternion.identity);
+                GameObject Tile = (GameObject)Instantiate(TypeDictionary[Type.FLY], Vector3.zero, Quaternion.identity);
                 Tile.name = "Tile(" + i + "," + j + ")";
 
-                Tile.GetComponent<MeshRenderer>();
+                Board[i, j] = Tile.GetComponent<GamePiece>();
+                Board[i, j].Mat = Tile.GetComponent<MeshRenderer>();
+                Board[i, j].Mat.material = ColourDictionary[Colour.RED]; 
+                Board[i, j].Initalize(i,j,this, Type.FLY, Colour.RED);
+                
+                if (Board[i, j].moveable)
+                {
+                    Board[i, j].Move(i, j);
+                }
 
                 //Makes space a child of the grid
                 Tile.transform.parent = transform;
@@ -127,5 +134,10 @@ public class GridController : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public Vector3 Worldposition(int x, int y)
+    {
+        return new Vector3(x + (x * 3), y + (y * 3), 0);
     }
 }
