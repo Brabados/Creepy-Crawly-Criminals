@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2255248275444199336}
   - component: {fileID: 2946369893855322125}
   - component: {fileID: 1082953563526010055}
-  - component: {fileID: 7689814560758503130}
+  - component: {fileID: 1998516908183379434}
   m_Layer: 0
   m_Name: AntPrefab
   m_TagString: Untagged
@@ -82,7 +82,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7689814560758503130
+--- !u!114 &1998516908183379434
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -91,8 +91,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1443281596271146258}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c98fd79866ed0db449f7598021d569d5, type: 3}
+  m_Script: {fileID: 11500000, guid: dbdf72cde3e1b3c4088c6c3726947526, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Mat: {fileID: 0}
   moveable: 1
   clearable: 1

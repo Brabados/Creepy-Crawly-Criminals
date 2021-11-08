@@ -27,19 +27,11 @@ public class GridController : MonoBehaviour
     }
 
     //Enum for each tile colour type. 
-    public enum Colour
-    {
-        RED,
-        GREEN,
-        BLUE,
-        YELLOW,
-        ANY,
-        COUNT
-    }
+
 
     //Refrence dictonarys for quick lookup
     private Dictionary<Type, GameObject> TypeDictionary;
-    private Dictionary<Colour, Material> ColourDictionary;
+
 
     //Structs for containing presetup for conversion to dictonary
     [System.Serializable]
@@ -49,16 +41,10 @@ public class GridController : MonoBehaviour
         public GameObject Prefab;
     }
 
-    [System.Serializable]
-    public struct GamePeiceColourPrefabs
-    {
-        public Colour colour;
-        public Material Prefab;
-    }
 
     //Inspector side ver of dictonarys to allow for setup
     public GamePeiceTypePrefabs[] _GamePeiceTypePrefabs;
-    public GamePeiceColourPrefabs[] _GamePeiceColourPrefabs;
+   
 
 
 
@@ -87,16 +73,7 @@ public class GridController : MonoBehaviour
 
         //Initalizing dictonarys for use in code from the modified inspector arrays
         TypeDictionary = new Dictionary<Type, GameObject>();
-        ColourDictionary = new Dictionary<Colour, Material>();
 
-        for (int i = 0; i < _GamePeiceColourPrefabs.Length; i++)
-        {
-            if (!ColourDictionary.ContainsKey(_GamePeiceColourPrefabs[i].colour))
-            {
-                ColourDictionary.Add(_GamePeiceColourPrefabs[i].colour, _GamePeiceColourPrefabs[i].Prefab);
-            }
-
-        }
         for (int i = 0; i < _GamePeiceTypePrefabs.Length; i++)
         {
             if (!TypeDictionary.ContainsKey(_GamePeiceTypePrefabs[i].type))
@@ -111,13 +88,16 @@ public class GridController : MonoBehaviour
             for (int j = 0; j < Ysize; j++)
             {
                 //Instanciates an instance of each space and puts it in the correct location on screen with offset
-                GameObject Tile = (GameObject)Instantiate(TypeDictionary[Type.FLY], Vector3.zero, Quaternion.identity);
+                int rand = Random.Range(0, 4);
+                GameObject Tile = (GameObject)Instantiate(TypeDictionary[(Type)rand], Vector3.zero, Quaternion.identity);
                 Tile.name = "Tile(" + i + "," + j + ")";
 
-                Board[i, j] = Tile.GetComponent<GamePiece>();
-                Board[i, j].Mat = Tile.GetComponent<MeshRenderer>();
-                Board[i, j].Mat.material = ColourDictionary[Colour.RED]; 
-                Board[i, j].Initalize(i,j,this, Type.FLY, Colour.RED);
+                Board[i, j] = Tile.GetComponent<ColouredPeices>();
+                Board[i, j].Initalize(i,j,this, (Type)rand, Tile.GetComponent<MeshRenderer>());
+                if(Board[i,j].coloured)
+                {
+                    //(ColouredPeices)Board[i, j].AsignColour(Random.Range(0,))
+                }
                 
                 if (Board[i, j].moveable)
                 {
@@ -130,7 +110,6 @@ public class GridController : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         

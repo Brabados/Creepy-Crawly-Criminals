@@ -9,12 +9,12 @@ public class GamePiece : MonoBehaviour
     private int _Ypos;
     private GridController _Grid;
     private GridController.Type _Type;
-    private GridController.Colour _Colour;
 
-    public MeshRenderer Mat;
+    public MeshRenderer _Mat;
 
     public bool moveable;
     public bool clearable;
+    public bool coloured;
     public int XPos
     {
         get { return _Xpos; }
@@ -48,10 +48,7 @@ public class GamePiece : MonoBehaviour
         get { return _Type; }
     }
 
-    public GridController.Colour Colour
-    {
-        get { return _Colour; }
-    }
+
 
 
 
@@ -68,13 +65,14 @@ public class GamePiece : MonoBehaviour
         
     }
 
-    public void Initalize(int x, int y, GridController grid, GridController.Type type ,GridController.Colour colour)
+    public void Initalize(int x, int y, GridController grid, GridController.Type type, MeshRenderer Mat)
     {
         _Xpos = x;
         _Ypos = y;
         _Grid = grid;
         _Type = type;
-        _Colour = colour;
+        _Mat = Mat;
+
     }
 
     public void Move(int NewX, int NewY)

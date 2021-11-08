@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3158628671071195815}
   - component: {fileID: 2052075312310590722}
   - component: {fileID: 4296039139994757576}
-  - component: {fileID: 2195853023444846634}
+  - component: {fileID: -3220839471512012762}
   m_Layer: 0
   m_Name: AphidPrefab
   m_TagString: Untagged
@@ -82,7 +82,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2195853023444846634
+--- !u!114 &-3220839471512012762
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -91,8 +91,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2350426720032540701}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c98fd79866ed0db449f7598021d569d5, type: 3}
+  m_Script: {fileID: 11500000, guid: dbdf72cde3e1b3c4088c6c3726947526, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _Mat: {fileID: 0}
   moveable: 1
   clearable: 1
+  _GamePeiceColourPrefabs: []
