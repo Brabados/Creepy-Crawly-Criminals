@@ -6,7 +6,7 @@ using UnityEngine;
 public class GridController : MonoBehaviour
 {
     //Array of game pieces to be manipulated later
-    GamePiece[,] Board;
+    public GamePiece[,] Board;
 
     //Inspector side board size veriables, may update for prebuilt levels later
     public int Xsize;
@@ -22,6 +22,7 @@ public class GridController : MonoBehaviour
         GRASSHOPPER,
         FLY,
         APHID,
+        EMPTY,
         ANY,
         COUNT
     }
@@ -46,13 +47,6 @@ public class GridController : MonoBehaviour
     public GamePeiceTypePrefabs[] _GamePeiceTypePrefabs;
    
 
-
-
-    private void Awake()
-    {
-      
-    }
-
     void Start()
     {
         //Storage for each gamepiece. May modify for prebuilt levels
@@ -64,7 +58,7 @@ public class GridController : MonoBehaviour
             for (int j = 0; j < Ysize; j++)
             {
                 //Instanciates an instance of each space and puts it in the correct location on screen with offset
-                GameObject Space = (GameObject)Instantiate(SpacePrefab, new Vector3(i + (i * 3), j + (j * 3), 0), Quaternion.identity);
+                GameObject Space = (GameObject)Instantiate(SpacePrefab, new Vector3(i + (i * 3), j + (j * 3), -1), Quaternion.identity);
 
                 //Makes space a child of the grid
                 Space.transform.parent = transform;
@@ -88,35 +82,98 @@ public class GridController : MonoBehaviour
             for (int j = 0; j < Ysize; j++)
             {
                 //Instanciates an instance of each space and puts it in the correct location on screen with offset
-                int rand = Random.Range(0, 4);
-                GameObject Tile = (GameObject)Instantiate(TypeDictionary[(Type)rand], Vector3.zero, Quaternion.identity);
-                Tile.name = "Tile(" + i + "," + j + ")";
-
-                Board[i, j] = Tile.GetComponent<ColouredPeices>();
-                Board[i, j].Initalize(i,j,this, (Type)rand, Tile.GetComponent<MeshRenderer>());
-                if(Board[i,j].coloured)
-                {
-                    //(ColouredPeices)Board[i, j].AsignColour(Random.Range(0,))
-                }
+                SpawnPieces(i, j, Type.EMPTY);
+              
                 
                 if (Board[i, j].moveable)
                 {
                     Board[i, j].Move(i, j);
                 }
+               
 
                 //Makes space a child of the grid
-                Tile.transform.parent = transform;
+                
             }
+        }
+        Filler();
+    }
+
+    public void Filler()
+    {
+        while(FillCheck())
+        {
+
         }
     }
 
-    void Update()
+    public bool FillCheck()
     {
-        
+        bool peiceMoved = false;
+
+        for (int y = Ysize - 2; y >= 0; y--)
+        {
+            for (int x = 0; x < Xsize; x++)
+            {
+                GamePiece CurrentPiece = Board[x, y];
+
+                if(CurrentPiece.moveable)
+                {
+                    GamePiece PieceBellow = Board[x, y + 1];
+                    if(PieceBellow.Type == Type.EMPTY)
+                    {
+                        CurrentPiece.Move(x, y + 1);
+                        Board[x, y + 1] = CurrentPiece;
+                        SpawnPieces(x, y, Type.EMPTY);
+                        Destroy(PieceBellow.gameObject);
+                        peiceMoved = true;
+                    }
+
+                }
+            }
+
+        }
+
+        for(int x = 0; x < Xsize; x++)
+        {
+            GamePiece PieceBellow = Board[x, 0];
+            if (PieceBellow.Type == Type.EMPTY)
+            {
+                int range = Random.Range(0, 4);
+                GameObject Tile = (GameObject)Instantiate(TypeDictionary[(Type)range], Worldposition(x,-1), Quaternion.identity);
+                Tile.transform.parent = transform;
+                Board[x, 0] = Tile.GetComponent<ColouredPeices>();
+                (Board[x, 0] as ColouredPeices).Initalize(x, -1, this, (Type)range, Tile.GetComponent<MeshRenderer>());
+                Board[x, 0].Move(x, 0);
+                (Board[x, 0] as ColouredPeices).AsignColour((ColouredPeices.Colour)Random.Range(0, 4));
+                Destroy(PieceBellow.gameObject);
+                peiceMoved = true;
+            }
+        }
+
+        return peiceMoved;
+
     }
 
     public Vector3 Worldposition(int x, int y)
     {
         return new Vector3(x + (x * 3), y + (y * 3), 0);
+    }
+
+    public GamePiece SpawnPieces(int x, int y, Type type)
+    {
+        GameObject Tile = (GameObject)Instantiate(TypeDictionary[type], Vector3.zero, Quaternion.identity);
+        Tile.transform.parent = transform;
+        if (type != Type.EMPTY)
+        {
+            Board[x, y] = Tile.GetComponent<ColouredPeices>();
+            (Board[x, y] as ColouredPeices).Initalize(x, y, this, type, Tile.GetComponent<MeshRenderer>());
+        }
+        else 
+        {
+            Board[x, y] = Tile.GetComponent<GamePiece>();
+            Board[x, y].Initalize(x, y, this, type);
+        }
+
+        return Board[x, y];
     }
 }

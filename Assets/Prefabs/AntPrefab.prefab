@@ -94,6 +94,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbdf72cde3e1b3c4088c6c3726947526, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Mat: {fileID: 0}
+  _Mat: {fileID: 0}
   moveable: 1
   clearable: 1
+  coloured: 0
+  _GamePeiceColourPrefabs:
+  - colour: 0
+    Prefab: {fileID: 2100000, guid: f295018c004dc5d4cacee37c4f95694b, type: 2}
+  - colour: 1
+    Prefab: {fileID: 2100000, guid: 6211d98d155092a4b9bb46fba95cfcd2, type: 2}
+  - colour: 2
+    Prefab: {fileID: 2100000, guid: c40be270400c1a245b8999eab20fe566, type: 2}
+  - colour: 3
+    Prefab: {fileID: 2100000, guid: 841bcfd2276cfac43a03b6963a151179, type: 2}

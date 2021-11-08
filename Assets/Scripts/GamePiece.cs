@@ -10,7 +10,6 @@ public class GamePiece : MonoBehaviour
     private GridController _Grid;
     private GridController.Type _Type;
 
-    public MeshRenderer _Mat;
 
     public bool moveable;
     public bool clearable;
@@ -65,13 +64,12 @@ public class GamePiece : MonoBehaviour
         
     }
 
-    public void Initalize(int x, int y, GridController grid, GridController.Type type, MeshRenderer Mat)
+    public virtual void Initalize(int x, int y, GridController grid, GridController.Type type)
     {
         _Xpos = x;
         _Ypos = y;
         _Grid = grid;
         _Type = type;
-        _Mat = Mat;
 
     }
 

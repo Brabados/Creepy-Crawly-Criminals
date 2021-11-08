@@ -97,4 +97,13 @@ MonoBehaviour:
   _Mat: {fileID: 0}
   moveable: 1
   clearable: 1
-  _GamePeiceColourPrefabs: []
+  coloured: 0
+  _GamePeiceColourPrefabs:
+  - colour: 0
+    Prefab: {fileID: 2100000, guid: f295018c004dc5d4cacee37c4f95694b, type: 2}
+  - colour: 1
+    Prefab: {fileID: 2100000, guid: 6211d98d155092a4b9bb46fba95cfcd2, type: 2}
+  - colour: 2
+    Prefab: {fileID: 2100000, guid: c40be270400c1a245b8999eab20fe566, type: 2}
+  - colour: 3
+    Prefab: {fileID: 2100000, guid: 841bcfd2276cfac43a03b6963a151179, type: 2}

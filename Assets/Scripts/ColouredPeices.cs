@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ColouredPeices : GamePiece
 {
+    public MeshRenderer _Mat;
     public enum Colour
     {
         RED,
@@ -39,7 +40,7 @@ public class ColouredPeices : GamePiece
     }
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         ColourDictionary = new Dictionary<Colour, Material>();
 
@@ -63,4 +64,11 @@ public class ColouredPeices : GamePiece
             _Mat.material = ColourDictionary[Asign];
         }
     }
+
+    public void Initalize(int x, int y, GridController grid, GridController.Type type, MeshRenderer Mat)
+    {
+        base.Initalize(x, y, grid, type);
+        _Mat = Mat;
+    }
+
 }
