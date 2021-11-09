@@ -9,6 +9,7 @@ public class GamePiece : MonoBehaviour
     private int _Ypos;
     private GridController _Grid;
     private GridController.Type _Type;
+    private IEnumerator _MoveCoroutine;
 
 
     public bool moveable;
@@ -73,12 +74,33 @@ public class GamePiece : MonoBehaviour
 
     }
 
-    public void Move(int NewX, int NewY)
+    public void Move(int NewX, int NewY, float time)
     {
        
-        _Xpos = NewX;
-        _Ypos = NewY;
-        this.transform.localPosition = Grid.Worldposition(NewX, NewY);
+        if(_MoveCoroutine != null)
+        {
+            StopCoroutine(_MoveCoroutine);
+        }
+        _MoveCoroutine = MoveCoroutine(NewX, NewY, time);
+        StartCoroutine(_MoveCoroutine);
+
+
+
         
+    }
+
+    private IEnumerator MoveCoroutine(int x, int y, float time)
+    {
+        _Xpos = x;
+        _Ypos = y;
+        Vector3 start = transform.localPosition;
+        Vector3 end = Grid.Worldposition(x, y);
+        for (float t = 0; t <= 1 * time; t += Time.deltaTime)
+        {
+            this.transform.localPosition = Vector3.Lerp(start, end, t / time);
+            yield return 0;
+        }
+
+        this.transform.localPosition = end;
     }
 }

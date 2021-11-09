@@ -15,6 +15,8 @@ public class GridController : MonoBehaviour
     //Prefab for the spaces the peices can sit on. Currently using place holder object.
     public GameObject SpacePrefab;
 
+    public float FillTime;
+
     //Enum for each basic tile type. Will need to be extended for special tiles
     public enum Type
     {
@@ -87,22 +89,19 @@ public class GridController : MonoBehaviour
                 
                 if (Board[i, j].moveable)
                 {
-                    Board[i, j].Move(i, j);
+                    Board[i, j].Move(i, j, FillTime);
                 }
                
-
-                //Makes space a child of the grid
-                
             }
         }
-        Filler();
+        StartCoroutine( Filler());
     }
 
-    public void Filler()
+    public IEnumerator Filler()
     {
         while(FillCheck())
         {
-
+            yield return new WaitForSeconds(FillTime);
         }
     }
 
@@ -121,7 +120,7 @@ public class GridController : MonoBehaviour
                     GamePiece PieceBellow = Board[x, y + 1];
                     if(PieceBellow.Type == Type.EMPTY)
                     {
-                        CurrentPiece.Move(x, y + 1);
+                        CurrentPiece.Move(x, y + 1, FillTime);
                         Board[x, y + 1] = CurrentPiece;
                         SpawnPieces(x, y, Type.EMPTY);
                         Destroy(PieceBellow.gameObject);
@@ -143,7 +142,7 @@ public class GridController : MonoBehaviour
                 Tile.transform.parent = transform;
                 Board[x, 0] = Tile.GetComponent<ColouredPeices>();
                 (Board[x, 0] as ColouredPeices).Initalize(x, -1, this, (Type)range, Tile.GetComponent<MeshRenderer>());
-                Board[x, 0].Move(x, 0);
+                Board[x, 0].Move(x, 0, FillTime);
                 (Board[x, 0] as ColouredPeices).AsignColour((ColouredPeices.Colour)Random.Range(0, 4));
                 Destroy(PieceBellow.gameObject);
                 peiceMoved = true;
