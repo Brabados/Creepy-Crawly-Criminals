@@ -25,12 +25,13 @@ public class GridController : MonoBehaviour
         FLY,
         APHID,
         EMPTY,
+        NONSPACE,
+        BARRIER,
         ANY,
         COUNT
     }
 
-    //Enum for each tile colour type. 
-
+    private bool inverse = false;
 
     //Refrence dictonarys for quick lookup
     private Dictionary<Type, GameObject> TypeDictionary;
@@ -101,6 +102,7 @@ public class GridController : MonoBehaviour
     {
         while(FillCheck())
         {
+            inverse = (!inverse);
             yield return new WaitForSeconds(FillTime);
         }
     }
@@ -111,8 +113,15 @@ public class GridController : MonoBehaviour
 
         for (int y = Ysize - 2; y >= 0; y--)
         {
-            for (int x = 0; x < Xsize; x++)
+            for (int xLoop = 0; xLoop < Xsize; xLoop++)
             {
+                int x = xLoop;
+
+                if(inverse)
+                {
+                    x = Xsize - 1 - xLoop;
+                }
+
                 GamePiece CurrentPiece = Board[x, y];
 
                 if(CurrentPiece.moveable)
@@ -127,6 +136,55 @@ public class GridController : MonoBehaviour
                         peiceMoved = true;
                     }
 
+                }
+                else
+                {
+                    for(int Diagonal = -1; Diagonal <=1; Diagonal++)
+                    {
+                        if (Diagonal != 0)
+                        {
+                            int DiagonalX = x + Diagonal;
+                             if(inverse)
+                             {
+                                DiagonalX = x - Diagonal;
+                             }
+
+                             if(DiagonalX >= 0 && DiagonalX<Xsize)
+                             {
+                                GamePiece DiagonalPiece = Board[DiagonalX, y + 1];
+
+                                if(DiagonalPiece.Type == Type.EMPTY)
+                                {
+                                    bool CanBeFilled = true;
+
+                                    for(int AboveY = y; AboveY >= 0; AboveY--)
+                                    {
+                                        GamePiece AboveDiag = Board[DiagonalX, AboveY];
+                                        if(AboveDiag.moveable)
+                                        {
+                                            break;
+                                        }
+                                        else if (!AboveDiag.moveable && AboveDiag.Type != Type.EMPTY)
+                                        {
+                                            CanBeFilled = false;
+                                            break;
+                                        }
+                                    }
+
+                                    if(!CanBeFilled)
+                                    {
+                                        CurrentPiece.Move(DiagonalX, y + 1, FillTime);
+                                        Board[DiagonalX, y + 1] = CurrentPiece;
+                                        SpawnPieces(x, y, Type.EMPTY);
+                                        Destroy(DiagonalPiece.gameObject);
+                                        peiceMoved = true;
+                                        break;
+                                    }
+
+                                }
+                             }
+                        }
+                    }
                 }
             }
 

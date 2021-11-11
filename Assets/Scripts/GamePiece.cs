@@ -48,23 +48,6 @@ public class GamePiece : MonoBehaviour
         get { return _Type; }
     }
 
-
-
-
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public virtual void Initalize(int x, int y, GridController grid, GridController.Type type)
     {
         _Xpos = x;
@@ -83,9 +66,6 @@ public class GamePiece : MonoBehaviour
         }
         _MoveCoroutine = MoveCoroutine(NewX, NewY, time);
         StartCoroutine(_MoveCoroutine);
-
-
-
         
     }
 
