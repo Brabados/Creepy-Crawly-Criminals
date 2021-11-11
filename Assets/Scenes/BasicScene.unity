@@ -310,7 +310,7 @@ GameObject:
   - component: {fileID: 2129672092}
   - component: {fileID: 2129672091}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Grid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -343,6 +343,8 @@ MonoBehaviour:
     Prefab: {fileID: 7225766258980027614, guid: 721180a3a6eba2b4f9f301f533ce6bc0, type: 3}
   - type: 4
     Prefab: {fileID: 1190452014299687341, guid: 939ac426289292648aab9685b6bc1d45, type: 3}
+  - type: 6
+    Prefab: {fileID: 4585282100913127523, guid: a788724b64e52694ba38d22da3a5c6b8, type: 3}
 --- !u!4 &2129672092
 Transform:
   m_ObjectHideFlags: 0

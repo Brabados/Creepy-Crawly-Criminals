@@ -62,7 +62,7 @@ public class GridController : MonoBehaviour
             {
                 //Instanciates an instance of each space and puts it in the correct location on screen with offset
                 GameObject Space = (GameObject)Instantiate(SpacePrefab, new Vector3(i + (i * 3), j + (j * 3), -1), Quaternion.identity);
-
+                Space.name = "Space" + i + " " + j;
                 //Makes space a child of the grid
                 Space.transform.parent = transform;
             }
@@ -95,7 +95,31 @@ public class GridController : MonoBehaviour
                
             }
         }
+
+        Destroy(Board[5, 5]);
+        GameObject Barrier = (GameObject)Instantiate(TypeDictionary[Type.BARRIER], Worldposition(5,5), Quaternion.identity);
+        Barrier.GetComponent<GamePiece>().Initalize(5, 5, this, Type.BARRIER);
+        Board[5, 5] = Barrier.GetComponent<GamePiece>();
+        Destroy(Board[5, 5]);
+        GameObject NonSpace = (GameObject)Instantiate(TypeDictionary[Type.NONSPACE], Worldposition(4, 0), Quaternion.identity);
+        NonSpace.GetComponent<GamePiece>().Initalize(4, 0, this, Type.NONSPACE);
+        Board[4, 0] = NonSpace.GetComponent<GamePiece>();
+
+        for (int i = 0; i < Xsize; i++)
+        {
+            for (int j = 0; j < Ysize; j++)
+            {
+                if (Board[i, j].Type == Type.NONSPACE)
+                {
+                    Transform check = transform.Find("Space" + i + " " + j);
+                    Destroy(check.gameObject);
+                }
+            }
+        }
+
         StartCoroutine( Filler());
+
+
     }
 
     public IEnumerator Filler()
@@ -135,56 +159,56 @@ public class GridController : MonoBehaviour
                         Destroy(PieceBellow.gameObject);
                         peiceMoved = true;
                     }
-
-                }
-                else
-                {
-                    for(int Diagonal = -1; Diagonal <=1; Diagonal++)
+                    else
                     {
-                        if (Diagonal != 0)
+                        for (int Diagonal = -1; Diagonal <= 1; Diagonal++)
                         {
-                            int DiagonalX = x + Diagonal;
-                             if(inverse)
-                             {
-                                DiagonalX = x - Diagonal;
-                             }
-
-                             if(DiagonalX >= 0 && DiagonalX<Xsize)
-                             {
-                                GamePiece DiagonalPiece = Board[DiagonalX, y + 1];
-
-                                if(DiagonalPiece.Type == Type.EMPTY)
+                            if (Diagonal != 0)
+                            {
+                                int DiagonalX = x + Diagonal;
+                                if (inverse)
                                 {
-                                    bool CanBeFilled = true;
-
-                                    for(int AboveY = y; AboveY >= 0; AboveY--)
-                                    {
-                                        GamePiece AboveDiag = Board[DiagonalX, AboveY];
-                                        if(AboveDiag.moveable)
-                                        {
-                                            break;
-                                        }
-                                        else if (!AboveDiag.moveable && AboveDiag.Type != Type.EMPTY)
-                                        {
-                                            CanBeFilled = false;
-                                            break;
-                                        }
-                                    }
-
-                                    if(!CanBeFilled)
-                                    {
-                                        CurrentPiece.Move(DiagonalX, y + 1, FillTime);
-                                        Board[DiagonalX, y + 1] = CurrentPiece;
-                                        SpawnPieces(x, y, Type.EMPTY);
-                                        Destroy(DiagonalPiece.gameObject);
-                                        peiceMoved = true;
-                                        break;
-                                    }
-
+                                    DiagonalX = x - Diagonal;
                                 }
-                             }
+
+                                if (DiagonalX >= 0 && DiagonalX < Xsize)
+                                {
+                                    GamePiece DiagonalPiece = Board[DiagonalX, y + 1];
+
+                                    if (DiagonalPiece.Type == Type.EMPTY)
+                                    {
+                                        bool CanBeFilled = true;
+
+                                        for (int AboveY = y; AboveY >= 0; AboveY--)
+                                        {
+                                            GamePiece AboveDiag = Board[DiagonalX, AboveY];
+                                            if (AboveDiag.moveable)
+                                            {
+                                                break;
+                                            }
+                                            else if (!AboveDiag.moveable && AboveDiag.Type != Type.EMPTY)
+                                            {
+                                                CanBeFilled = false;
+                                                break;
+                                            }
+                                        }
+
+                                        if (!CanBeFilled)
+                                        {
+                                            CurrentPiece.Move(DiagonalX, y + 1, FillTime);
+                                            Board[DiagonalX, y + 1] = CurrentPiece;
+                                            SpawnPieces(x, y, Type.EMPTY);
+                                            Destroy(DiagonalPiece.gameObject);
+                                            peiceMoved = true;
+                                            break;
+                                        }
+
+                                    }
+                                }
+                            }
                         }
                     }
+
                 }
             }
 
@@ -220,7 +244,7 @@ public class GridController : MonoBehaviour
     {
         GameObject Tile = (GameObject)Instantiate(TypeDictionary[type], Vector3.zero, Quaternion.identity);
         Tile.transform.parent = transform;
-        if (type != Type.EMPTY)
+        if (type != Type.EMPTY && type != Type.BARRIER)
         {
             Board[x, y] = Tile.GetComponent<ColouredPeices>();
             (Board[x, y] as ColouredPeices).Initalize(x, y, this, type, Tile.GetComponent<MeshRenderer>());
