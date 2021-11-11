@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2052075312310590722}
   - component: {fileID: 4296039139994757576}
   - component: {fileID: -3220839471512012762}
+  - component: {fileID: 9107307515623709706}
   m_Layer: 0
   m_Name: AphidPrefab
   m_TagString: Untagged
@@ -94,10 +95,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbdf72cde3e1b3c4088c6c3726947526, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Mat: {fileID: 0}
   moveable: 1
   clearable: 1
   coloured: 0
+  _Mat: {fileID: 0}
   _GamePeiceColourPrefabs:
   - colour: 0
     Prefab: {fileID: 2100000, guid: f295018c004dc5d4cacee37c4f95694b, type: 2}
@@ -107,3 +108,17 @@ MonoBehaviour:
     Prefab: {fileID: 2100000, guid: c40be270400c1a245b8999eab20fe566, type: 2}
   - colour: 3
     Prefab: {fileID: 2100000, guid: 841bcfd2276cfac43a03b6963a151179, type: 2}
+--- !u!64 &9107307515623709706
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2350426720032540701}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 3613567641014311022, guid: 8bca14bb92f091746867f3bc3a34834d, type: 3}

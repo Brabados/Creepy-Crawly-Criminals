@@ -27,6 +27,7 @@ public class GridController : MonoBehaviour
         EMPTY,
         NONSPACE,
         BARRIER,
+        REPLACE,
         ANY,
         COUNT
     }
@@ -96,15 +97,6 @@ public class GridController : MonoBehaviour
             }
         }
 
-        Destroy(Board[5, 5]);
-        GameObject Barrier = (GameObject)Instantiate(TypeDictionary[Type.BARRIER], Worldposition(5,5), Quaternion.identity);
-        Barrier.GetComponent<GamePiece>().Initalize(5, 5, this, Type.BARRIER);
-        Board[5, 5] = Barrier.GetComponent<GamePiece>();
-        Destroy(Board[5, 5]);
-        GameObject NonSpace = (GameObject)Instantiate(TypeDictionary[Type.NONSPACE], Worldposition(4, 0), Quaternion.identity);
-        NonSpace.GetComponent<GamePiece>().Initalize(4, 0, this, Type.NONSPACE);
-        Board[4, 0] = NonSpace.GetComponent<GamePiece>();
-
         for (int i = 0; i < Xsize; i++)
         {
             for (int j = 0; j < Ysize; j++)
@@ -118,7 +110,6 @@ public class GridController : MonoBehaviour
         }
 
         StartCoroutine( Filler());
-
 
     }
 
@@ -134,6 +125,9 @@ public class GridController : MonoBehaviour
     public bool FillCheck()
     {
         bool peiceMoved = false;
+
+        //For reffrence will be moving each section of this to its own function later once I'm sure its workin
+        //as intended. I hate how these casscading ifs and loops look.
 
         for (int y = Ysize - 2; y >= 0; y--)
         {
@@ -151,6 +145,8 @@ public class GridController : MonoBehaviour
                 if(CurrentPiece.moveable)
                 {
                     GamePiece PieceBellow = Board[x, y + 1];
+
+                    
                     if(PieceBellow.Type == Type.EMPTY)
                     {
                         CurrentPiece.Move(x, y + 1, FillTime);
@@ -161,54 +157,16 @@ public class GridController : MonoBehaviour
                     }
                     else
                     {
-                        for (int Diagonal = -1; Diagonal <= 1; Diagonal++)
+                        peiceMoved = CheckDiagonal(x, y, CurrentPiece);
+
+                        if (!peiceMoved)
                         {
-                            if (Diagonal != 0)
-                            {
-                                int DiagonalX = x + Diagonal;
-                                if (inverse)
-                                {
-                                    DiagonalX = x - Diagonal;
-                                }
-
-                                if (DiagonalX >= 0 && DiagonalX < Xsize)
-                                {
-                                    GamePiece DiagonalPiece = Board[DiagonalX, y + 1];
-
-                                    if (DiagonalPiece.Type == Type.EMPTY)
-                                    {
-                                        bool CanBeFilled = true;
-
-                                        for (int AboveY = y; AboveY >= 0; AboveY--)
-                                        {
-                                            GamePiece AboveDiag = Board[DiagonalX, AboveY];
-                                            if (AboveDiag.moveable)
-                                            {
-                                                break;
-                                            }
-                                            else if (!AboveDiag.moveable && AboveDiag.Type != Type.EMPTY)
-                                            {
-                                                CanBeFilled = false;
-                                                break;
-                                            }
-                                        }
-
-                                        if (!CanBeFilled)
-                                        {
-                                            CurrentPiece.Move(DiagonalX, y + 1, FillTime);
-                                            Board[DiagonalX, y + 1] = CurrentPiece;
-                                            SpawnPieces(x, y, Type.EMPTY);
-                                            Destroy(DiagonalPiece.gameObject);
-                                            peiceMoved = true;
-                                            break;
-                                        }
-
-                                    }
-                                }
-                            }
+                            bool SideMoved = CheckSide(x, y, CurrentPiece);
+                            peiceMoved = SideMoved;
                         }
+                        
+                        
                     }
-
                 }
             }
 
@@ -231,6 +189,38 @@ public class GridController : MonoBehaviour
             }
         }
 
+        if(!peiceMoved)
+        {
+            for(int y = 0; y < Ysize; y++)
+            {
+                for(int x = 0; x < Xsize; x++)
+                {
+                    if(Board[x,y].Type == Type.EMPTY)
+                    {
+                        GamePiece CurrentPiece = Board[x, y];
+                        for(int XLoop = -1; XLoop <= 1; XLoop++)
+                        {
+                            if(XLoop !=0)
+                            {
+                                if(x + XLoop <= Xsize && x + XLoop > 0)
+                                {
+                                    GamePiece ToMove = Board[x + XLoop, y];
+                                    if(ToMove.moveable)
+                                    {
+                                        ToMove.Move(x, y, FillTime);
+                                        Board[x, y] = ToMove;
+                                        SpawnPieces(x, y, Type.EMPTY);
+                                        Destroy(CurrentPiece.gameObject);
+                                        peiceMoved = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         return peiceMoved;
 
     }
@@ -257,4 +247,108 @@ public class GridController : MonoBehaviour
 
         return Board[x, y];
     }
+
+    public bool CheckSide(int x, int y, GamePiece CurrentPiece)
+    {
+        bool peiceMoved = false;
+        for (int Side = -1; Side <= 1; Side++)
+        {
+            if (Side != 0)
+            {
+                int SideX = x + Side;
+                if (inverse)
+                {
+                    SideX = x - Side;
+                }
+
+                if (SideX >= 0 && SideX < Xsize)
+                {
+                    GamePiece SidePiece = Board[SideX, y];
+
+                    if (SidePiece.Type == Type.EMPTY)
+                    {
+                        bool CanBeFilled = true;
+
+                        for (int AboveY = y; AboveY > 0; AboveY--)
+                        {
+                            GamePiece AboveSide = Board[SideX, AboveY];
+                            if (AboveSide.moveable)
+                            {
+                               
+                            }
+                            else if (!AboveSide.moveable && AboveSide.Type != Type.EMPTY)
+                            {
+                                CanBeFilled = false;
+                                break;
+                            }
+
+                        }
+                        if (!CanBeFilled)
+                        {
+                            CurrentPiece.Move(SideX, y, FillTime);
+                            Board[SideX, y] = CurrentPiece;
+                            SpawnPieces(x, y, Type.EMPTY);
+                            Destroy(SidePiece.gameObject);
+                            peiceMoved = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return peiceMoved;
+    }
+
+    public bool CheckDiagonal(int x, int y, GamePiece CurrentPiece)
+    {
+        bool peiceMoved = false;
+        for (int Diagonal = -1; Diagonal <= 1; Diagonal++)
+        {
+            if (Diagonal != 0)
+            {
+                int DiagonalX = x + Diagonal;
+                if (inverse)
+                {
+                    DiagonalX = x - Diagonal;
+                }
+
+                if (DiagonalX >= 0 && DiagonalX < Xsize)
+                {
+                    GamePiece DiagonalPiece = Board[DiagonalX, y + 1];
+
+                    if (DiagonalPiece.Type == Type.EMPTY)
+                    {
+                        bool CanBeFilled = true;
+
+                        for (int AboveY = y; AboveY >= 0; AboveY--)
+                        {
+                            GamePiece AboveDiag = Board[DiagonalX, AboveY];
+                            if (AboveDiag.moveable)
+                            {
+                              
+                            }
+                            else if (!AboveDiag.moveable && AboveDiag.Type != Type.EMPTY)
+                            {
+                                CanBeFilled = false;
+                                break;
+                            }
+                        }
+
+                        if (!CanBeFilled)
+                        {
+                            CurrentPiece.Move(DiagonalX, y + 1, FillTime);
+                            Board[DiagonalX, y + 1] = CurrentPiece;
+                            SpawnPieces(x, y, Type.EMPTY);
+                            Destroy(DiagonalPiece.gameObject);
+                            peiceMoved = true;
+                            break;
+                        }
+
+                    }
+                }
+            }
+        }
+        return peiceMoved;
+    }
+
 }

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2946369893855322125}
   - component: {fileID: 1082953563526010055}
   - component: {fileID: 1998516908183379434}
+  - component: {fileID: -1161926492489806463}
   m_Layer: 0
   m_Name: AntPrefab
   m_TagString: Untagged
@@ -94,10 +95,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbdf72cde3e1b3c4088c6c3726947526, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Mat: {fileID: 0}
   moveable: 1
   clearable: 1
   coloured: 0
+  _Mat: {fileID: 0}
   _GamePeiceColourPrefabs:
   - colour: 0
     Prefab: {fileID: 2100000, guid: f295018c004dc5d4cacee37c4f95694b, type: 2}
@@ -107,3 +108,17 @@ MonoBehaviour:
     Prefab: {fileID: 2100000, guid: c40be270400c1a245b8999eab20fe566, type: 2}
   - colour: 3
     Prefab: {fileID: 2100000, guid: 841bcfd2276cfac43a03b6963a151179, type: 2}
+--- !u!64 &-1161926492489806463
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1443281596271146258}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -5495902117074765545, guid: deb2f2cd1b345524a96638a01c6e7a36, type: 3}
