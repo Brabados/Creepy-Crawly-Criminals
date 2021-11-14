@@ -351,4 +351,24 @@ public class GridController : MonoBehaviour
         return peiceMoved;
     }
 
+
+    public void Insansiate(BoardData BoardState)
+    {
+        Xsize = BoardState.X;
+        Ysize = BoardState.Y;
+        foreach(GamePiece n in Board)
+        {
+            Destroy(n.gameObject); 
+        }
+
+        Board = new GamePiece[Xsize, Ysize];
+
+        for(int i = 0; i < Xsize; i++)
+        {
+            for(int j = 0; j< Ysize; j++)
+            {              
+                SpawnPieces(i, j, (Type)BoardState.Tiles[i,j]);
+            }
+        }
+    }
 }
