@@ -8,7 +8,7 @@ public class LoadButton : MonoBehaviour
 
     public void Load()
     {
-       BoardData NewBoard = SaveSystem.LoadBoard(Application.dataPath + "/BoardTest.board");
+       BoardData NewBoard = SaveSystem.LoadBoard(Application.dataPath + "Boards/BoardTest.board");
 
         Grid.Insansiate(NewBoard);
     }

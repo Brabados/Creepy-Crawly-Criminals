@@ -4,10 +4,10 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 public static class SaveSystem 
 {
-    public static void SaveBoard(GridController Save)
+    public static void SaveBoard(GridController Save, string BoardName)
     {
         BinaryFormatter Formatter = new BinaryFormatter();
-        string file = Application.dataPath + "/BoardTest.board";
+        string file = Application.dataPath + "/Boards/" + BoardName + ".board";
         FileStream stream = new FileStream(file, FileMode.Create);
 
         BoardData ToSave = new BoardData(Save);

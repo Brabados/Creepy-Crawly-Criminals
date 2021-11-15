@@ -7,6 +7,9 @@ public class GridController : MonoBehaviour
 {
     //Array of game pieces to be manipulated later
     public GamePiece[,] Board;
+    public GameObject[,] Spaces;
+
+    public bool Hold;
 
     //Inspector side board size veriables, may update for prebuilt levels later
     public int Xsize;
@@ -53,22 +56,6 @@ public class GridController : MonoBehaviour
 
     void Start()
     {
-        //Storage for each gamepiece. May modify for prebuilt levels
-        Board = new GamePiece[Xsize, Ysize];
-
-        //Sets blank spaces for the game board
-        for (int i = 0; i < Xsize; i++)
-        {
-            for (int j = 0; j < Ysize; j++)
-            {
-                //Instanciates an instance of each space and puts it in the correct location on screen with offset
-                GameObject Space = (GameObject)Instantiate(SpacePrefab, new Vector3(i + (i * 3), j + (j * 3), -1), Quaternion.identity);
-                Space.name = "Space" + i + " " + j;
-                //Makes space a child of the grid
-                Space.transform.parent = transform;
-            }
-        }
-
         //Initalizing dictonarys for use in code from the modified inspector arrays
         TypeDictionary = new Dictionary<Type, GameObject>();
 
@@ -79,37 +66,42 @@ public class GridController : MonoBehaviour
                 TypeDictionary.Add(_GamePeiceTypePrefabs[i].type, _GamePeiceTypePrefabs[i].Prefab);
             }
         }
-
-                //Sets blank spaces for the game board
-        for (int i = 0; i < Xsize; i++)
+        if (!Hold)
         {
-            for (int j = 0; j < Ysize; j++)
-            {
-                //Instanciates an instance of each space and puts it in the correct location on screen with offset
-                SpawnPieces(i, j, Type.EMPTY);
-              
-                
-                if (Board[i, j].moveable)
-                {
-                    Board[i, j].Move(i, j, FillTime);
-                }
-               
-            }
-        }
 
-        for (int i = 0; i < Xsize; i++)
-        {
-            for (int j = 0; j < Ysize; j++)
+            AddSpaces();
+
+            //Sets blank spaces for the game board
+            for (int i = 0; i < Xsize; i++)
             {
-                if (Board[i, j].Type == Type.NONSPACE)
+                for (int j = 0; j < Ysize; j++)
                 {
-                    Transform check = transform.Find("Space" + i + " " + j);
-                    Destroy(check.gameObject);
+                    //Instanciates an instance of each space and puts it in the correct location on screen with offset
+                    SpawnPieces(i, j, Type.EMPTY);
+
+
+                    if (Board[i, j].moveable)
+                    {
+                        Board[i, j].Move(i, j, FillTime);
+                    }
+
                 }
             }
-        }
 
-        StartCoroutine( Filler());
+            for (int i = 0; i < Xsize; i++)
+            {
+                for (int j = 0; j < Ysize; j++)
+                {
+                    if (Board[i, j].Type == Type.NONSPACE)
+                    {
+                        Transform check = transform.Find("Space" + i + " " + j);
+                        Destroy(check.gameObject);
+                    }
+                }
+            }
+
+            StartCoroutine(Filler());
+        }
 
     }
 
@@ -351,6 +343,25 @@ public class GridController : MonoBehaviour
         return peiceMoved;
     }
 
+    public void AddSpaces()
+    {
+        //Storage for each gamepiece.
+        Board = new GamePiece[Xsize, Ysize];
+        Spaces = new GameObject[Xsize, Ysize];
+        //Sets blank spaces for the game board
+        for (int i = 0; i < Xsize; i++)
+        {
+            for (int j = 0; j < Ysize; j++)
+            {
+                //Instanciates an instance of each space and puts it in the correct location on screen with offset
+                GameObject Space = (GameObject)Instantiate(SpacePrefab, new Vector3(i + (i * 3), j + (j * 3), -1), Quaternion.identity);
+                Space.name = "Space" + i + " " + j;
+                //Makes space a child of the grid
+                Space.transform.parent = transform;
+                Spaces[i, j] = Space;
+            }
+        }
+    }
 
     public void Insansiate(BoardData BoardState)
     {
@@ -368,7 +379,18 @@ public class GridController : MonoBehaviour
             for(int j = 0; j< Ysize; j++)
             {              
                 SpawnPieces(i, j, (Type)BoardState.Tiles[i,j]);
+                if(Board[i,j].coloured)
+                {
+                    (Board[i, j] as ColouredPeices).AsignColour((ColouredPeices.Colour)BoardState.Colours[i, j]);
+                }
+                if (Board[i, j].moveable)
+                {
+                    Board[i, j].Move(i, j, FillTime);
+                }
+
             }
         }
+
+        
     }
 }
