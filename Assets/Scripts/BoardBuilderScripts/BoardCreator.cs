@@ -15,19 +15,15 @@ public class BoardCreator : MonoBehaviour
 
     public Dropdown Type;
 
+    public GridController.Type SetType;
+
     public Dropdown Colour;
+    public ColouredPeices.Colour SetColour;
 
     public void Awake()
     {
         Controller = Board.GetComponent<GridController>();
         Controller.Hold = true;
-    }
-
-    public void OnMouseDown()
-    {
-        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-
     }
 
     public void SetArray()
@@ -73,5 +69,15 @@ public class BoardCreator : MonoBehaviour
                 (n as ColouredPeices).AsignColour(Controller.Spaces[n.XPos, n.YPos].GetComponent<ButtonPress>().Colour);
             }
         }
+    }
+
+    public void TypeChange()
+    {
+        SetType = (GridController.Type)Type.value;
+    }
+
+    public void ColourChange()
+    {
+        SetColour = (ColouredPeices.Colour)Colour.value;
     }
 }

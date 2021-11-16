@@ -97,8 +97,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   X: 0
   y: 0
-  Type: {fileID: 0}
-  Colour: {fileID: 0}
+  Type: 0
+  Colour: 0
+  BoardMod: {fileID: 1496798055381768985, guid: 22244d89e6915f245b7ab59565587385, type: 3}
 --- !u!64 &1417027110556735327
 MeshCollider:
   m_ObjectHideFlags: 0

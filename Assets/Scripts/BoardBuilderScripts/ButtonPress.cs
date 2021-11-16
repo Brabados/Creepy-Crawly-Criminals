@@ -9,6 +9,18 @@ public class ButtonPress : MonoBehaviour
     public int y;
     public GridController.Type Type;
     public ColouredPeices.Colour Colour;
+    public BoardCreator BoardMod;
+
+    public void Start()
+    {
+        BoardMod = FindObjectOfType<BoardCreator>();
+    }
+
+    public void OnMouseDown()
+    {
+        Type = BoardMod.SetType;
+        Colour = BoardMod.SetColour;
+    }
 
 
 }
