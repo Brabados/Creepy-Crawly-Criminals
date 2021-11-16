@@ -226,7 +226,7 @@ public class GridController : MonoBehaviour
     {
         GameObject Tile = (GameObject)Instantiate(TypeDictionary[type], Vector3.zero, Quaternion.identity);
         Tile.transform.parent = transform;
-        if (type != Type.EMPTY && type != Type.BARRIER)
+        if (type != Type.EMPTY && type != Type.BARRIER && type != Type.NONSPACE)
         {
             Board[x, y] = Tile.GetComponent<ColouredPeices>();
             (Board[x, y] as ColouredPeices).Initalize(x, y, this, type, Tile.GetComponent<MeshRenderer>());

@@ -7,7 +7,7 @@ public class BoardCreator : MonoBehaviour
 {
     public GameObject Board;
 
-    private GridController Controller;
+    public GridController Controller;
 
     public InputField X;
 

@@ -10,16 +10,21 @@ public class ButtonPress : MonoBehaviour
     public GridController.Type Type;
     public ColouredPeices.Colour Colour;
     public BoardCreator BoardMod;
+    public MeshRenderer Mesh;
 
     public void Start()
     {
         BoardMod = FindObjectOfType<BoardCreator>();
+        Mesh = transform.gameObject.GetComponent<MeshRenderer>();
     }
 
     public void OnMouseDown()
     {
         Type = BoardMod.SetType;
-        Colour = BoardMod.SetColour;
+        if (Type != GridController.Type.EMPTY && Type != GridController.Type.NONSPACE)
+        {
+            Colour = BoardMod.SetColour;
+        }
     }
 
 

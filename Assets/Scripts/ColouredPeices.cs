@@ -71,4 +71,10 @@ public class ColouredPeices : GamePiece
         _Mat = Mat;
     }
 
+    public Material ReturnMat(Colour Inp)
+    {
+        Material retuner = ColourDictionary[Inp];
+
+        return retuner;
+    }
 }
