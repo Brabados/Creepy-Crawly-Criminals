@@ -9,6 +9,7 @@ public class BoardData
     public int Y;
     public int[,] Tiles;
     public int[,] Colours;
+    public bool[,] Movement;
 
     public BoardData(GridController Format)
     {
@@ -17,6 +18,7 @@ public class BoardData
 
         Tiles = new int[X, Y];
         Colours = new int[X, Y];
+        Movement = new bool[X,Y];
 
         for(int i = 0; i < X; i++)
         {
@@ -27,6 +29,7 @@ public class BoardData
                 {
                     Colours[i, j] = (int)(Format.Board[i, j] as ColouredPeices).MyColour;
                 }
+                Movement[i, j] = Format.Board[i, j].moveable;
             }
 
         }

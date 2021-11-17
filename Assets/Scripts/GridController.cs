@@ -383,10 +383,8 @@ public class GridController : MonoBehaviour
                 {
                     (Board[i, j] as ColouredPeices).AsignColour((ColouredPeices.Colour)BoardState.Colours[i, j]);
                 }
-                if (Board[i, j].moveable)
-                {
-                    Board[i, j].Move(i, j, FillTime);
-                }
+                Board[i, j].Move(i, j, FillTime);
+                Board[i, j].moveable = BoardState.Movement[i, j];
 
             }
         }

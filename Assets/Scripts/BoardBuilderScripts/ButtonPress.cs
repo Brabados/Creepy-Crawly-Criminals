@@ -7,6 +7,7 @@ public class ButtonPress : MonoBehaviour
 
     public int X;
     public int y;
+    public bool Moveable;
     public GridController.Type Type;
     public ColouredPeices.Colour Colour;
     public BoardCreator BoardMod;

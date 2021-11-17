@@ -20,6 +20,10 @@ public class BoardCreator : MonoBehaviour
     public Dropdown Colour;
     public ColouredPeices.Colour SetColour;
 
+    public Toggle Movement;
+
+    public bool SetMove;
+
     public void Awake()
     {
         Controller = Board.GetComponent<GridController>();
@@ -59,7 +63,9 @@ public class BoardCreator : MonoBehaviour
         {
             ButtonPress Change;
             Change = n.GetComponent<ButtonPress>();
-            Controller.SpawnPieces(Change.X, Change.y, Change.Type);
+            GamePiece Edit;
+            Edit = Controller.SpawnPieces(Change.X, Change.y, Change.Type);
+            Edit.moveable = Change.Moveable;
         }
         foreach(GamePiece n in Controller.Board)
         {
@@ -79,5 +85,10 @@ public class BoardCreator : MonoBehaviour
     public void ColourChange()
     {
         SetColour = (ColouredPeices.Colour)Colour.value;
+    }
+
+    public void MovementChanged()
+    {
+        SetMove = Movement.isOn;
     }
 }
