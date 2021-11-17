@@ -22,10 +22,20 @@ public class ButtonPress : MonoBehaviour
     public void OnMouseDown()
     {
         Type = BoardMod.SetType;
-        if (Type != GridController.Type.EMPTY && Type != GridController.Type.NONSPACE)
+        if (Type != GridController.Type.EMPTY && Type != GridController.Type.NONSPACE && Type != GridController.Type.BARRIER)
         {
             Colour = BoardMod.SetColour;
+            Mesh.forceRenderingOff = false;
         }
+        else if (Type == GridController.Type.NONSPACE)
+        {
+            Mesh.forceRenderingOff = true;
+        }
+        else
+        {
+            Mesh.forceRenderingOff = false;
+        }
+        Moveable = BoardMod.SetMove;
     }
 
 

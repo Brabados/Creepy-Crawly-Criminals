@@ -32,8 +32,9 @@ public class BoardCreator : MonoBehaviour
 
     public void SetArray()
     {
-        try
-        {
+     //   try
+       // {
+            Controller.ClearGrid();
             Controller.Xsize = System.Convert.ToInt32(X.text.ToString());
             Controller.Ysize = System.Convert.ToInt32(Y.text.ToString());
             Controller.AddSpaces();
@@ -50,15 +51,28 @@ public class BoardCreator : MonoBehaviour
                     Change.Colour = ColouredPeices.Colour.RED;
                 }
             }
-        }
-        catch
-        {
-            Debug.LogError("Non-Int in size feild");
-        }
+      //  }
+      //  catch
+       // {
+           // Debug.LogError("Non-Int in size feild");
+      //  }
     }
 
     public void GenerateBoard()
     {
+        if(Controller.Board != null)
+        {
+            for (int i = 0; i < Controller.Xsize; i++)
+            {
+                for (int j = 0; j < Controller.Ysize; j++)
+                {
+                    if (Controller.Board[i, j] != null)
+                    {
+                        Destroy(Controller.Board[i, j].gameObject);
+                    }
+                }
+            }
+        }
         foreach(GameObject n in Controller.Spaces)
         {
             ButtonPress Change;

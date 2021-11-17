@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 public class LoadButton : MonoBehaviour
 {
@@ -8,7 +9,9 @@ public class LoadButton : MonoBehaviour
 
     public void Load()
     {
-       BoardData NewBoard = SaveSystem.LoadBoard(Application.dataPath + "Boards/BoardTest.board");
+        DirectoryInfo dir = new DirectoryInfo(Application.dataPath + "/Boards");
+        FileInfo[] info = dir.GetFiles("*.board");
+        BoardData NewBoard = SaveSystem.LoadBoard(info[Random.Range(0,info.Length - 1)].FullName);
 
         Grid.Insansiate(NewBoard);
     }

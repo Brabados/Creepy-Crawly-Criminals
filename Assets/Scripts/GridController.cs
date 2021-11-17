@@ -88,18 +88,6 @@ public class GridController : MonoBehaviour
                 }
             }
 
-            for (int i = 0; i < Xsize; i++)
-            {
-                for (int j = 0; j < Ysize; j++)
-                {
-                    if (Board[i, j].Type == Type.NONSPACE)
-                    {
-                        Transform check = transform.Find("Space" + i + " " + j);
-                        Destroy(check.gameObject);
-                    }
-                }
-            }
-
             StartCoroutine(Filler());
         }
 
@@ -194,7 +182,7 @@ public class GridController : MonoBehaviour
                         {
                             if(XLoop !=0)
                             {
-                                if(x + XLoop <= Xsize && x + XLoop > 0)
+                                if(x + XLoop < Xsize && x + XLoop > 0)
                                 {
                                     GamePiece ToMove = Board[x + XLoop, y];
                                     if(ToMove.moveable)
@@ -344,7 +332,8 @@ public class GridController : MonoBehaviour
     }
 
     public void AddSpaces()
-    {
+    {      
+
         //Storage for each gamepiece.
         Board = new GamePiece[Xsize, Ysize];
         Spaces = new GameObject[Xsize, Ysize];
@@ -365,14 +354,11 @@ public class GridController : MonoBehaviour
 
     public void Insansiate(BoardData BoardState)
     {
+        ClearGrid();
         Xsize = BoardState.X;
         Ysize = BoardState.Y;
-        foreach(GamePiece n in Board)
-        {
-            Destroy(n.gameObject); 
-        }
 
-        Board = new GamePiece[Xsize, Ysize];
+        AddSpaces();
 
         for(int i = 0; i < Xsize; i++)
         {
@@ -385,10 +371,43 @@ public class GridController : MonoBehaviour
                 }
                 Board[i, j].Move(i, j, FillTime);
                 Board[i, j].moveable = BoardState.Movement[i, j];
+                if (Board[i, j].Type == Type.NONSPACE)
+                {
+                    Destroy(Spaces[i, j]);
+                }
+            }
+        }
+        StartCoroutine(Filler());
+    }
 
+    public void ClearGrid()
+    {
+        if (Board != null)
+        {
+            for (int i = 0; i < Xsize; i++)
+            {
+                for (int j = 0; j < Ysize; j++)
+                {
+                    if (Board[i, j] != null)
+                    {
+                        Destroy(Board[i, j].gameObject);
+                    }
+                }
             }
         }
 
-        
+        if (Spaces != null)
+        {
+            for (int i = 0; i < Xsize; i++)
+            {
+                for (int j = 0; j < Ysize; j++)
+                {
+                    if (Spaces[i, j] != null)
+                    {
+                        Destroy(Spaces[i, j]);
+                    }
+                }
+            }
+        }
     }
 }
