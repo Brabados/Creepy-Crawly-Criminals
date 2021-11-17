@@ -42,7 +42,7 @@ public class BoardCreator : MonoBehaviour
                     Change = Controller.Spaces[i, j].GetComponent<ButtonPress>();
                     Change.X = i;
                     Change.y = j;
-                    Change.Type = GridController.Type.ANT;
+                    Change.Type = GridController.Type.EMPTY;
                     Change.Colour = ColouredPeices.Colour.RED;
                 }
             }
