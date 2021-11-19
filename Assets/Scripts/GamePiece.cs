@@ -7,6 +7,7 @@ public class GamePiece : MonoBehaviour
 
     private int _Xpos;
     private int _Ypos;
+    private bool _BeingCleared = false;
     private GridController _Grid;
     private GridController.Type _Type;
     private IEnumerator _MoveCoroutine;
@@ -36,6 +37,11 @@ public class GamePiece : MonoBehaviour
                 _Ypos = value;
             }
         }
+    }
+
+    public bool BeingCleared
+    {
+        get { return _BeingCleared; }
     }
 
     public GridController Grid
@@ -83,4 +89,47 @@ public class GamePiece : MonoBehaviour
 
         this.transform.localPosition = end;
     }
+
+    private void OnMouseDown()
+    {
+        if(moveable)
+        {
+            Grid.ClickAndHold(this);
+        }
+        
+    }
+
+    private void OnMouseEnter()
+    {
+        Grid.NewSpace(this);
+    }
+
+    private void OnMouseUp()
+    {
+        Grid.Release();
+    }
+
+    public void Clear()
+    {
+        _BeingCleared = true;
+        StartCoroutine(ClearCoroutine());
+    }
+
+    private IEnumerator ClearCoroutine()
+    {
+        Animator Animation = GetComponent<Animator>();
+        if(Animation)
+        {
+            Animation.Play(0);
+            yield return new WaitForSeconds(Grid.FillTime);
+            Destroy(gameObject);
+        }
+        else 
+        {
+            yield return new WaitForSeconds(Grid.FillTime);
+            Destroy(gameObject);
+        }
+
+    }
+
 }

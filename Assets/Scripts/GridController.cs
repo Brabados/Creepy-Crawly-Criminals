@@ -9,6 +9,7 @@ public class GridController : MonoBehaviour
     public GamePiece[,] Board;
     public GameObject[,] Spaces;
 
+    //For use to restrict the grid generation when being used for a board builder
     public bool Hold;
 
     //Inspector side board size veriables, may update for prebuilt levels later
@@ -35,6 +36,7 @@ public class GridController : MonoBehaviour
         COUNT
     }
 
+    //For 'randomizing' direction a piece falls down diagonaly
     private bool inverse = false;
 
     //Refrence dictonarys for quick lookup
@@ -52,7 +54,10 @@ public class GridController : MonoBehaviour
 
     //Inspector side ver of dictonarys to allow for setup
     public GamePeiceTypePrefabs[] _GamePeiceTypePrefabs;
-   
+
+
+    public GamePiece Current;
+    public GamePiece Over;
 
     void Start()
     {
@@ -76,7 +81,7 @@ public class GridController : MonoBehaviour
             {
                 for (int j = 0; j < Ysize; j++)
                 {
-                    //Instanciates an instance of each space and puts it in the correct location on screen with offset
+                    //Instanciates an instance of each space
                     SpawnPieces(i, j, Type.EMPTY);
 
 
@@ -95,10 +100,16 @@ public class GridController : MonoBehaviour
 
     public IEnumerator Filler()
     {
-        while(FillCheck())
+        bool needsfill = true;
+        while (needsfill)
         {
-            inverse = (!inverse);
             yield return new WaitForSeconds(FillTime);
+            while (FillCheck())
+            {
+                inverse = (!inverse);
+                yield return new WaitForSeconds(FillTime);
+            }
+            needsfill = ClearAllMatches();
         }
     }
 
@@ -409,5 +420,356 @@ public class GridController : MonoBehaviour
                 }
             }
         }
+    }
+
+    public bool AreAjacent(GamePiece TileA, GamePiece TileB)
+    {
+        return ((int)Mathf.Abs(TileA.YPos - TileB.YPos) == 1 && (TileA.YPos - TileB.YPos >= -1 && TileA.YPos - TileB.YPos <=1) && (TileA.XPos - TileB.XPos >= -1 && TileA.XPos - TileB.XPos <= 1)) 
+            || ((int)Mathf.Abs(TileA.XPos - TileB.XPos) == 1 && (TileA.XPos - TileB.XPos >= -1 && TileA.XPos - TileB.XPos <= 1) && (TileA.YPos - TileB.YPos >= -1 && TileA.YPos - TileB.YPos <= 1));
+    }
+
+    public bool AreDiagonal(GamePiece TileA, GamePiece TileB)
+    {
+        for (int i = TileA.XPos, j = TileA.YPos; i < Xsize && j < Ysize; i++, j++)
+        {
+            if(Board[i,j].Type == Type.BARRIER || Board[i, j].Type == Type.NONSPACE)
+            {
+                break;
+            }
+            else if(TileB.XPos == i && TileB.YPos == j)
+            {
+                return true;
+            }          
+        }
+        for (int i = TileA.XPos, j = TileA.YPos; i >= 0 && j < Ysize; i--, j++)
+        {
+            if (Board[i, j].Type == Type.BARRIER || Board[i, j].Type == Type.NONSPACE)
+            {
+                break;
+            }
+            if (TileB.XPos == i && TileB.YPos == j)
+            {
+                 return true;
+            }          
+        }
+        for (int i = TileA.XPos, j = TileA.YPos; i >= 0 && j >= 0; j--,i--)
+        {
+            if (Board[i, j].Type == Type.BARRIER || Board[i, j].Type == Type.NONSPACE)
+            {
+                break;
+            }
+            if (TileB.XPos == i && TileB.YPos == j)
+            {
+                return true;
+            }
+        }
+        for (int i = TileA.XPos , j = TileA.YPos; i < Xsize && j >= 0;j--, i++)
+        {
+            if (Board[i, j].Type == Type.BARRIER || Board[i, j].Type == Type.NONSPACE)
+            {
+                break;
+            }
+            if (TileB.XPos == i && TileB.YPos == j)
+            {
+                return true;
+            }            
+        }
+        return false;
+    }
+
+    public bool AreHorizontalOrVertical(GamePiece TileA, GamePiece TileB)
+    {
+        return (TileA.YPos == TileB.YPos || TileA.XPos == TileB.XPos);
+    }
+
+    public void SwapPieces(GamePiece TileA, GamePiece TileB)
+    {
+        if(TileA.moveable && TileB.moveable)
+        {
+            Board[TileA.XPos, TileA.YPos] = TileB;
+            Board[TileB.XPos, TileB.YPos] = TileA;
+
+            int TileAX = TileA.XPos;
+            int TileAY = TileA.YPos;
+
+            if (CheckMatch(TileA, TileB.XPos, TileB.YPos) != null || CheckMatch(TileB, TileA.XPos, TileA.YPos) != null)
+            {
+                TileA.Move(TileB.XPos, TileB.YPos, FillTime);
+                TileB.Move(TileAX, TileAY, FillTime);
+                ClearAllMatches();
+                StartCoroutine(Filler());
+            }
+            else 
+            {
+                Board[TileA.XPos, TileA.YPos] = TileB;
+                Board[TileB.XPos, TileB.YPos] = TileA;
+            }
+        }
+    }
+
+    public void ClickAndHold(GamePiece Clicked)
+    {
+        Current = Clicked;
+    }
+
+    public void NewSpace(GamePiece Entered)
+    {
+        Over = Entered;
+    }
+
+    public void Release()
+    {
+        if (Current.Type == Type.APHID)
+        {
+            if (AreAjacent(Current, Over))
+            {
+                SwapPieces(Current, Over);
+            }
+        }
+        else if (Current.Type == Type.ANT)
+        {
+            if (AreDiagonal(Current, Over))
+            {
+                SwapPieces(Current, Over);
+            }
+        }
+        else if (Current.Type == Type.GRASSHOPPER)
+        {
+            if(AreHorizontalOrVertical(Current,Over))
+            {
+                SwapPieces(Current, Over);
+            }
+        }
+        else if (Current.Type == Type.FLY)
+        {
+            if(AreHorizontalOrVertical(Current,Over) || AreDiagonal(Current,Over))
+            {
+                SwapPieces(Current, Over);
+            }
+        }
+    }
+
+    public List<GamePiece> CheckMatch(GamePiece ToCheck, int NewX, int NewY)
+    {
+        if(ToCheck.coloured)
+        {
+            ColouredPeices.Colour Compare = (ToCheck as ColouredPeices).MyColour;
+            List<GamePiece> Horizontal = new List<GamePiece>();
+            List<GamePiece> Vertical = new List<GamePiece>();
+            List<GamePiece> Matches = new List<GamePiece>();
+
+            Horizontal.Add(ToCheck);
+
+            for(int Direction = 0; Direction <= 1; Direction++)
+            {
+                for(int Offset = 1; Offset < Xsize; Offset++)
+                {
+                    int x;
+                    if(Direction == 0)
+                    {
+                        x = NewX - Offset;
+                    }
+                    else
+                    {
+                        x = NewX + Offset;
+                    }
+
+                    if(x < 0 || x >= Xsize)
+                    {
+                        break;
+                    }
+                    if(Board[x,NewY].coloured)
+                    {
+                        if((Board[x, NewY] as ColouredPeices).MyColour == Compare)
+                        {
+                            Horizontal.Add(Board[x, NewY]);
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+                if(Horizontal.Count >= 3)
+                {
+                    for(int i = 0; i < Horizontal.Count; i++)
+                    {
+                        for (int Offset = 1; Offset < Ysize; Offset++)
+                        {
+                            int y;
+                            if (Direction == 0)
+                            {
+                                y = NewY - Offset;
+                            }
+                            else
+                            {
+                                y = NewY + Offset;
+                            }
+
+                            if (y < 0 || y >= Ysize)
+                            {
+                                break;
+                            }
+                            if (Board[Horizontal[i].XPos, y].coloured)
+                            {
+                                if ((Board[Horizontal[i].XPos, y] as ColouredPeices).MyColour == Compare)
+                                {
+                                    Vertical.Add(Board[Horizontal[i].XPos, y]);
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                        if (Vertical.Count < 2)
+                        {
+                            Vertical.Clear();
+                        }
+                        else
+                        {
+                            for (int j = 0; j < Vertical.Count; j++)
+                            {
+                                Matches.Add(Vertical[j]);
+                            }
+                        }
+                        Matches.Add(Horizontal[i]);
+                        Vertical.Clear();
+                    }
+                }
+
+                if (Matches.Count >= 3)
+                {
+                    return Matches;
+                }
+            }
+
+            Horizontal.Clear();
+            Vertical.Clear();
+
+            Vertical.Add(ToCheck);
+
+            for (int Direction = 0; Direction <= 1; Direction++)
+            {
+                for (int Offset = 1; Offset < Ysize; Offset++)
+                {
+                    int y;
+                    if (Direction == 0)
+                    {
+                        y = NewY - Offset;
+                    }
+                    else
+                    {
+                        y = NewY + Offset;
+                    }
+
+                    if (y < 0 || y >= Ysize)
+                    {
+                        break;
+                    }
+                    if (Board[NewX, y].coloured)
+                    {
+                        if ((Board[NewX, y] as ColouredPeices).MyColour == Compare)
+                        {
+                            Vertical.Add(Board[NewX, y]);
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+                if (Vertical.Count >= 3)
+                {
+                    for (int i = 0; i < Vertical.Count; i++)
+                    {
+                        for (int Offset = 1; Offset < Ysize; Offset++)
+                        {
+                            int x;
+                            if (Direction == 0)
+                            {
+                                x = NewX - Offset;
+                            }
+                            else
+                            {
+                                x = NewX + Offset;
+                            }
+
+                            if (x < 0 || x >= Xsize)
+                            {
+                                break;
+                            }
+                            if (Board[x, Vertical[i].YPos].coloured)
+                            {
+                                if ((Board[x, Vertical[i].YPos] as ColouredPeices).MyColour == Compare)
+                                {
+                                    Horizontal.Add(Board[x, Vertical[i].YPos]);
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                        if (Horizontal.Count < 2)
+                        {
+                            Horizontal.Clear();
+                        }
+                        else
+                        {
+                            for (int j = 0; j < Horizontal.Count; j++)
+                            {
+                                Matches.Add(Horizontal[j]);
+                            }
+                        }
+                        Matches.Add(Vertical[i]);
+                        Horizontal.Clear();
+                    }
+                }
+                if (Matches.Count >= 3)
+                {
+                    return Matches;
+                }
+            }
+        }
+        return null;
+    }
+
+    public bool ClearAllMatches()
+    {
+        bool needsfill = false;
+        for(int i = 0; i < Xsize; i++)
+        {
+            for(int j = 0; j < Ysize; j++)
+            {
+                if (Board[i,j].clearable)
+                {
+                    List<GamePiece> matches = CheckMatch(Board[i, j], i, j);
+
+                    if(matches != null)
+                    {
+                        for(int x = 0; x < matches.Count; x++)
+                        {
+                            if(ClearPeice(matches[x].XPos , matches[x].YPos))
+                            {
+                                needsfill = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return needsfill;
+    }
+
+    public bool ClearPeice(int x, int y)
+    {
+        if(Board[x,y].clearable && !Board[x,y].BeingCleared)
+        {
+            Board[x, y].Clear();
+            SpawnPieces(x, y, Type.EMPTY);
+            return true;
+        }
+        return false;
     }
 }
