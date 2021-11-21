@@ -428,7 +428,7 @@ public class GridController : MonoBehaviour
             || ((int)Mathf.Abs(TileA.XPos - TileB.XPos) == 1 && (TileA.XPos - TileB.XPos >= -1 && TileA.XPos - TileB.XPos <= 1) && (TileA.YPos - TileB.YPos >= -1 && TileA.YPos - TileB.YPos <= 1));
     }
 
-    public bool AreDiagonal(GamePiece TileA, GamePiece TileB)
+    public int AreDiagonal(GamePiece TileA, GamePiece TileB)
     {
         for (int i = TileA.XPos, j = TileA.YPos; i < Xsize && j < Ysize; i++, j++)
         {
@@ -438,7 +438,7 @@ public class GridController : MonoBehaviour
             }
             else if(TileB.XPos == i && TileB.YPos == j)
             {
-                return true;
+                return 1;
             }          
         }
         for (int i = TileA.XPos, j = TileA.YPos; i >= 0 && j < Ysize; i--, j++)
@@ -449,7 +449,7 @@ public class GridController : MonoBehaviour
             }
             if (TileB.XPos == i && TileB.YPos == j)
             {
-                 return true;
+                 return 2;
             }          
         }
         for (int i = TileA.XPos, j = TileA.YPos; i >= 0 && j >= 0; j--,i--)
@@ -460,7 +460,7 @@ public class GridController : MonoBehaviour
             }
             if (TileB.XPos == i && TileB.YPos == j)
             {
-                return true;
+                return 3;
             }
         }
         for (int i = TileA.XPos , j = TileA.YPos; i < Xsize && j >= 0;j--, i++)
@@ -471,10 +471,10 @@ public class GridController : MonoBehaviour
             }
             if (TileB.XPos == i && TileB.YPos == j)
             {
-                return true;
+                return 4;
             }            
         }
-        return false;
+        return 0;
     }
 
     public bool AreHorizontalOrVertical(GamePiece TileA, GamePiece TileB)
@@ -484,25 +484,131 @@ public class GridController : MonoBehaviour
 
     public void SwapPieces(GamePiece TileA, GamePiece TileB)
     {
+        int diag = AreDiagonal(TileA, TileB);
         if(TileA.moveable && TileB.moveable)
         {
-            Board[TileA.XPos, TileA.YPos] = TileB;
-            Board[TileB.XPos, TileB.YPos] = TileA;
 
-            int TileAX = TileA.XPos;
-            int TileAY = TileA.YPos;
+            int TileAX = TileB.XPos;
+            int TileAY = TileB.YPos;
+            List<GamePiece> MovingTiles = new List<GamePiece>();
 
-            if (CheckMatch(TileA, TileB.XPos, TileB.YPos) != null || CheckMatch(TileB, TileA.XPos, TileA.YPos) != null)
+            if(AreAjacent(TileA,TileB))
             {
-                TileA.Move(TileB.XPos, TileB.YPos, FillTime);
-                TileB.Move(TileAX, TileAY, FillTime);
-                ClearAllMatches();
-                StartCoroutine(Filler());
+                if (CheckMatch(TileA, TileB.XPos, TileB.YPos) != null || CheckMatch(TileB, TileA.XPos, TileA.YPos) != null)
+                {
+                    TileAX = TileA.XPos;
+                    TileAY = TileA.YPos;
+                    Board[TileA.XPos, TileA.YPos] = TileB;
+                    Board[TileB.XPos, TileB.YPos] = TileA;
+                    TileA.Move(TileB.XPos, TileB.YPos, FillTime);
+                    TileB.Move(TileAX, TileAY, FillTime);
+                    ClearAllMatches();
+                    StartCoroutine(Filler());
+                }
+            }
+            else if(AreHorizontalOrVertical(TileA, TileB))
+            {
+                if (CheckMatch(TileA, TileB.XPos, TileB.YPos) != null)
+                {
+                    if (TileA.XPos == TileB.XPos)
+                    {
+                        int Direction = TileA.YPos - TileB.YPos;
+                        if (Direction < 0)
+                        {
+                            for (int i = TileA.YPos + 1; i <= TileB.YPos; i++)
+                            {
+                                MovingTiles.Add(Board[TileA.XPos, i]);
+                            }
+                            for (int i = 0; i < MovingTiles.Count; i++)
+                            {
+                                Board[MovingTiles[i].XPos, MovingTiles[i].YPos - 1] = MovingTiles[i];
+                                MovingTiles[i].Move(MovingTiles[i].XPos, MovingTiles[i].YPos - 1, FillTime);
+                            }
+                            Board[TileAX, TileAY] = TileA;
+                            TileA.Move(TileAX, TileAY, FillTime);
+                            ClearAllMatches();
+                            StartCoroutine(Filler());
+                        }
+                        else
+                        {
+                            for (int i = TileA.YPos - 1; i >= TileB.YPos; i--)
+                            {
+                                MovingTiles.Add(Board[TileA.XPos, i]);
+                            }
+                            for (int i = 0; i < MovingTiles.Count; i++)
+                            {
+                                Board[MovingTiles[i].XPos, MovingTiles[i].YPos + 1] = MovingTiles[i];
+                                MovingTiles[i].Move(MovingTiles[i].XPos, MovingTiles[i].YPos + 1, FillTime);
+
+                            }
+                            Board[TileAX, TileAY] = TileA;
+                            TileA.Move(TileAX, TileAY, FillTime);
+                            ClearAllMatches();
+                            StartCoroutine(Filler());
+                        }
+                    }
+                    else
+                    {
+                        int Direction = TileA.XPos - TileB.XPos;
+                        if (Direction < 0)
+                        {
+                            for (int i = TileA.XPos + 1; i <= TileB.XPos; i++)
+                            {
+                                MovingTiles.Add(Board[i, TileA.YPos]);
+                            }
+                            for (int i = 0; i < MovingTiles.Count; i++)
+                            {
+                                Board[MovingTiles[i].XPos - 1, MovingTiles[i].YPos] = MovingTiles[i];
+                                MovingTiles[i].Move(MovingTiles[i].XPos - 1, MovingTiles[i].YPos, FillTime);
+
+                            }
+                            Board[TileAX, TileAY] = TileA;
+                            TileA.Move(TileAX, TileAY, FillTime);
+                            ClearAllMatches();
+                            StartCoroutine(Filler());
+                        }
+                        else
+                        {
+                            for (int i = TileA.XPos - 1; i >= TileB.XPos; i--)
+                            {
+                                MovingTiles.Add(Board[i, TileA.YPos]);
+                            }
+                            for (int i = 0; i < MovingTiles.Count; i++)
+                            {
+                                Board[MovingTiles[i].XPos + 1, MovingTiles[i].YPos] = MovingTiles[i];
+                                MovingTiles[i].Move(MovingTiles[i].XPos + 1, MovingTiles[i].YPos, FillTime);
+
+                            }
+                            Board[TileAX, TileAY] = TileA;
+                            TileA.Move(TileAX, TileAY, FillTime);
+                            ClearAllMatches();
+                            StartCoroutine(Filler());
+                        }
+                    }
+                }
+            }
+            else if(diag != 0)
+            {
+                if (diag == 1)
+                {
+
+                }
+                else if(diag == 2)
+                {
+
+                }
+                else if(diag == 3)
+                {
+
+                }
+                else
+                {
+
+                }
             }
             else 
             {
-                Board[TileA.XPos, TileA.YPos] = TileB;
-                Board[TileB.XPos, TileB.YPos] = TileA;
+
             }
         }
     }
@@ -528,7 +634,7 @@ public class GridController : MonoBehaviour
         }
         else if (Current.Type == Type.ANT)
         {
-            if (AreDiagonal(Current, Over))
+            if (AreDiagonal(Current, Over) != 0)
             {
                 SwapPieces(Current, Over);
             }
@@ -542,13 +648,14 @@ public class GridController : MonoBehaviour
         }
         else if (Current.Type == Type.FLY)
         {
-            if(AreHorizontalOrVertical(Current,Over) || AreDiagonal(Current,Over))
+            if(AreHorizontalOrVertical(Current,Over) || AreDiagonal(Current,Over) != 0)
             {
                 SwapPieces(Current, Over);
             }
         }
     }
 
+    //bug with ajacent peices moving sometimes even though no match. Trying to figure out where the logic fails.
     public List<GamePiece> CheckMatch(GamePiece ToCheck, int NewX, int NewY)
     {
         if(ToCheck.coloured)
