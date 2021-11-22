@@ -452,7 +452,7 @@ public class GridController : MonoBehaviour
                  return 2;
             }          
         }
-        for (int i = TileA.XPos, j = TileA.YPos; i >= 0 && j >= 0; j--,i--)
+        for (int i = TileA.XPos, j = TileA.YPos; i >= 0 && j >= 0; i--, j--)
         {
             if (Board[i, j].Type == Type.BARRIER || Board[i, j].Type == Type.NONSPACE)
             {
@@ -463,7 +463,7 @@ public class GridController : MonoBehaviour
                 return 3;
             }
         }
-        for (int i = TileA.XPos , j = TileA.YPos; i < Xsize && j >= 0;j--, i++)
+        for (int i = TileA.XPos , j = TileA.YPos; i < Xsize && j >= 0; i++, j--)
         {
             if (Board[i, j].Type == Type.BARRIER || Board[i, j].Type == Type.NONSPACE)
             {
@@ -494,17 +494,23 @@ public class GridController : MonoBehaviour
 
             if(AreAjacent(TileA,TileB))
             {
+                TileAX = TileA.XPos;
+                TileAY = TileA.YPos;
+                Board[TileB.XPos, TileB.YPos] = TileA;
+                Board[TileAX, TileAY] = TileB;
                 if (CheckMatch(TileA, TileB.XPos, TileB.YPos) != null || CheckMatch(TileB, TileA.XPos, TileA.YPos) != null)
                 {
-                    TileAX = TileA.XPos;
-                    TileAY = TileA.YPos;
-                    Board[TileA.XPos, TileA.YPos] = TileB;
-                    Board[TileB.XPos, TileB.YPos] = TileA;
                     TileA.Move(TileB.XPos, TileB.YPos, FillTime);
                     TileB.Move(TileAX, TileAY, FillTime);
                     ClearAllMatches();
                     StartCoroutine(Filler());
                 }
+                else
+                {
+                    Board[TileA.XPos, TileA.YPos] = TileB;
+                    Board[TileAX, TileAY] = TileA;
+                }
+
             }
             else if(AreHorizontalOrVertical(TileA, TileB))
             {
@@ -589,26 +595,73 @@ public class GridController : MonoBehaviour
             }
             else if(diag != 0)
             {
-                if (diag == 1)
+                if (CheckMatch(TileA, TileB.XPos, TileB.YPos) != null)
                 {
-
+                    if (diag == 1)
+                    {
+                        for (int i = TileA.XPos + 1, j = TileA.YPos + 1; i <= TileB.XPos && j <= TileB.YPos; i++, j++)
+                        {
+                            MovingTiles.Add(Board[i, j]);
+                        }
+                        for (int i = 0; i < MovingTiles.Count; i++)
+                        {
+                            Board[MovingTiles[i].XPos - 1, MovingTiles[i].YPos - 1] = MovingTiles[i];
+                            MovingTiles[i].Move(MovingTiles[i].XPos - 1, MovingTiles[i].YPos - 1, FillTime);
+                        }
+                        Board[TileAX, TileAY] = TileA;
+                        TileA.Move(TileAX, TileAY, FillTime);
+                        ClearAllMatches();
+                        StartCoroutine(Filler());
+                    }
+                    else if (diag == 2)
+                    {
+                        for (int i = TileA.XPos - 1, j = TileA.YPos + 1; i >= TileB.XPos && j <= TileB.YPos; i--, j++)
+                        {
+                            MovingTiles.Add(Board[i, j]);
+                        }
+                        for (int i = 0; i < MovingTiles.Count; i++)
+                        {
+                            Board[MovingTiles[i].XPos + 1, MovingTiles[i].YPos - 1] = MovingTiles[i];
+                            MovingTiles[i].Move(MovingTiles[i].XPos + 1, MovingTiles[i].YPos - 1, FillTime);
+                        }
+                        Board[TileAX, TileAY] = TileA;
+                        TileA.Move(TileAX, TileAY, FillTime);
+                        ClearAllMatches();
+                        StartCoroutine(Filler());
+                    }
+                    else if (diag == 3)
+                    {
+                        for (int i = TileA.XPos - 1, j = TileA.YPos - 1; i >= TileB.XPos && j >= TileB.YPos; i--, j--)
+                        {
+                            MovingTiles.Add(Board[i, j]);
+                        }
+                        for (int i = 0; i < MovingTiles.Count; i++)
+                        {
+                            Board[MovingTiles[i].XPos + 1, MovingTiles[i].YPos + 1] = MovingTiles[i];
+                            MovingTiles[i].Move(MovingTiles[i].XPos + 1, MovingTiles[i].YPos + 1, FillTime);
+                        }
+                        Board[TileAX, TileAY] = TileA;
+                        TileA.Move(TileAX, TileAY, FillTime);
+                        ClearAllMatches();
+                        StartCoroutine(Filler());
+                    }
+                    else
+                    {
+                        for (int i = TileA.XPos + 1, j = TileA.YPos - 1; i <= TileB.XPos && j >= TileB.YPos; i++, j--)
+                        {
+                            MovingTiles.Add(Board[i, j]);
+                        }
+                        for (int i = 0; i < MovingTiles.Count; i++)
+                        {
+                            Board[MovingTiles[i].XPos - 1, MovingTiles[i].YPos + 1] = MovingTiles[i];
+                            MovingTiles[i].Move(MovingTiles[i].XPos - 1, MovingTiles[i].YPos + 1, FillTime);
+                        }
+                        Board[TileAX, TileAY] = TileA;
+                        TileA.Move(TileAX, TileAY, FillTime);
+                        ClearAllMatches();
+                        StartCoroutine(Filler());
+                    }
                 }
-                else if(diag == 2)
-                {
-
-                }
-                else if(diag == 3)
-                {
-
-                }
-                else
-                {
-
-                }
-            }
-            else 
-            {
-
             }
         }
     }
@@ -689,7 +742,10 @@ public class GridController : MonoBehaviour
                     {
                         if((Board[x, NewY] as ColouredPeices).MyColour == Compare)
                         {
-                            Horizontal.Add(Board[x, NewY]);
+                            if (!Horizontal.Contains(Board[x, NewY]))
+                            {
+                                Horizontal.Add(Board[x, NewY]);
+                            }
                         }
                         else
                         {
@@ -721,7 +777,10 @@ public class GridController : MonoBehaviour
                             {
                                 if ((Board[Horizontal[i].XPos, y] as ColouredPeices).MyColour == Compare)
                                 {
-                                    Vertical.Add(Board[Horizontal[i].XPos, y]);
+                                    if (!Vertical.Contains(Board[Horizontal[i].XPos, y]))
+                                    {
+                                        Vertical.Add(Board[Horizontal[i].XPos, y]);
+                                    }
                                 }
                                 else
                                 {
@@ -778,7 +837,10 @@ public class GridController : MonoBehaviour
                     {
                         if ((Board[NewX, y] as ColouredPeices).MyColour == Compare)
                         {
-                            Vertical.Add(Board[NewX, y]);
+                            if (!Vertical.Contains(Board[NewX, y]))
+                            {
+                                Vertical.Add(Board[NewX, y]);
+                            }
                         }
                         else
                         {
@@ -810,7 +872,10 @@ public class GridController : MonoBehaviour
                             {
                                 if ((Board[x, Vertical[i].YPos] as ColouredPeices).MyColour == Compare)
                                 {
-                                    Horizontal.Add(Board[x, Vertical[i].YPos]);
+                                    if (!Horizontal.Contains(Board[x, Vertical[i].YPos]))
+                                    {
+                                        Horizontal.Add(Board[x, Vertical[i].YPos]);
+                                    }
                                 }
                                 else
                                 {
