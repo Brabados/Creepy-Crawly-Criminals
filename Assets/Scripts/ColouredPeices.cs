@@ -77,4 +77,9 @@ public class ColouredPeices : GamePiece
 
         return retuner;
     }
+
+    private void OnDestroy()
+    {
+        EventManager.current.AddPower(MyColour);
+    }
 }
