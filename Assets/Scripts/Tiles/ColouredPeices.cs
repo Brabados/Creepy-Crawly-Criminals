@@ -42,17 +42,7 @@ public class ColouredPeices : GamePiece
     // Start is called before the first frame update
     void Awake()
     {
-        ColourDictionary = new Dictionary<Colour, Material>();
-
-        for (int i = 0; i < _GamePeiceColourPrefabs.Length; i++)
-        {
-            if (!ColourDictionary.ContainsKey(_GamePeiceColourPrefabs[i].colour))
-            {
-                ColourDictionary.Add(_GamePeiceColourPrefabs[i].colour, _GamePeiceColourPrefabs[i].Prefab);
-            }
-
-        }
-        coloured = true;
+        SetDictonary();
     }
 
     public void AsignColour(Colour Asign)
@@ -81,5 +71,20 @@ public class ColouredPeices : GamePiece
     private void OnDestroy()
     {
         EventManager.current.AddPower(MyColour);
+    }
+
+    public void SetDictonary()
+    {
+        ColourDictionary = new Dictionary<Colour, Material>();
+
+        for (int i = 0; i < _GamePeiceColourPrefabs.Length; i++)
+        {
+            if (!ColourDictionary.ContainsKey(_GamePeiceColourPrefabs[i].colour))
+            {
+                ColourDictionary.Add(_GamePeiceColourPrefabs[i].colour, _GamePeiceColourPrefabs[i].Prefab);
+            }
+
+        }
+        coloured = true;
     }
 }

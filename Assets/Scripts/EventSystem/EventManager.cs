@@ -13,6 +13,7 @@ public class EventManager : MonoBehaviour
     }
 
     public event Action<ColouredPeices.Colour> onAddPower;
+    public event Action onSpecial;
 
     public void AddPower(ColouredPeices.Colour colour)
     {
@@ -21,4 +22,13 @@ public class EventManager : MonoBehaviour
             onAddPower(colour);
         }
     }
+
+    public void Special()
+    {
+        if(onSpecial != null)
+        {
+            onSpecial();
+        }
+    }
+
 }

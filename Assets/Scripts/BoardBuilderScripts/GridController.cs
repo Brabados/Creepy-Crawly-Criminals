@@ -31,6 +31,7 @@ public class GridController : MonoBehaviour
         EMPTY,
         NONSPACE,
         BARRIER,
+        BOMB,
         REPLACE,
         ANY,
         COUNT
@@ -71,18 +72,27 @@ public class GridController : MonoBehaviour
                 TypeDictionary.Add(_GamePeiceTypePrefabs[i].type, _GamePeiceTypePrefabs[i].Prefab);
             }
         }
+
+
+
         if (!Hold)
         {
 
             AddSpaces();
-
+            
+            SpawnPieces(5, 5,Type.BOMB);
+            Board[5, 5].Move(5,5, FillTime);
+            (Board[5, 5] as ColouredPeices).AsignColour(ColouredPeices.Colour.RED);
             //Sets blank spaces for the game board
             for (int i = 0; i < Xsize; i++)
             {
                 for (int j = 0; j < Ysize; j++)
                 {
                     //Instanciates an instance of each space
-                    SpawnPieces(i, j, Type.EMPTY);
+                    if (Board[i, j] == null)
+                    {
+                        SpawnPieces(i, j, Type.EMPTY);
+                    }
 
 
                     if (Board[i, j].moveable)
@@ -110,6 +120,10 @@ public class GridController : MonoBehaviour
                 yield return new WaitForSeconds(FillTime);
             }
             needsfill = ClearAllMatches();
+            if(!needsfill)
+            {
+                EventManager.current.Special();
+            }
         }
     }
 
