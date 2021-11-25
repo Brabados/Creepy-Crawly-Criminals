@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BombPower : PowerBase
 {
-    void Awake()
+    void Start()
     {
         Activator.onClick.AddListener(delegate { Select(); });
     }

@@ -13,12 +13,11 @@ public class PowerBase : MonoBehaviour
     public ColouredPeices.Colour AssignedColour;
     public Button Activator;
 
-    public virtual void Select()
+    public void Awake()
     {
-
+       AssignedColour = (ColouredPeices.Colour)Activator.GetComponent<PowerButton>().Power;
     }
-
-    public virtual void Activation()
+    public virtual void Select()
     {
 
     }
