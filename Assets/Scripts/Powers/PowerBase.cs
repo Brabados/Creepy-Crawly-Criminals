@@ -7,7 +7,19 @@ public class PowerBase : MonoBehaviour
 {
     private string _Name;
     private string _Discription;
-    private int _Cost;
+    public int Cost;
+    public PowerManager PowerPoints;
+
+    public string Name
+    {
+        get { return _Name; }
+    }
+
+    public string Discription
+    {
+        get { return _Discription; }
+    }
+
     public bool SelectTile;
     public bool Activate;
     public ColouredPeices.Colour AssignedColour;
@@ -15,10 +27,14 @@ public class PowerBase : MonoBehaviour
 
     public void Awake()
     {
-       AssignedColour = (ColouredPeices.Colour)Activator.GetComponent<PowerButton>().Power;
+        PowerButton power = Activator.gameObject.GetComponent<PowerButton>();
+        AssignedColour = power.Power;
+        PowerPoints = FindObjectOfType<PowerManager>();
     }
     public virtual void Select()
     {
 
     }
+
+
 }

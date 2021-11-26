@@ -6,10 +6,13 @@ public class PowerManager : MonoBehaviour
 {
 
     public int red, green, blue, yellow = 0;
+    public GridController Grid;
     // Start is called before the first frame update
     void Start()
     {
+        Grid = FindObjectOfType<GridController>();
         EventManager.current.onAddPower += AddPower;
+        EventManager.current.onTileReplacement += UsePower;
     }
 
     private void AddPower(ColouredPeices.Colour colour)
@@ -31,6 +34,47 @@ public class PowerManager : MonoBehaviour
             default:
                 break;
         }      
+    }
+
+    public int CheckValue(ColouredPeices.Colour colour)
+    {
+        
+        switch ((int)colour)
+        {
+            case 0:
+                return red; ;
+            case 1:
+                return green; ;
+            case 2:
+                return blue; ;
+            case 3:
+                return yellow;
+            default:
+                return 0;
+        }
+    }
+
+    public void UsePower(ColouredPeices Pcolour)
+    {
+        ColouredPeices.Colour colour = Pcolour.MyColour;
+        int cost = 0;
+        switch ((int)colour)
+        {
+            case 0:
+                red -= Grid.Red.GetComponent<PowerBase>().Cost;
+                break;
+            case 1:
+                green -= cost;
+                break; 
+            case 2:
+                blue -= cost;
+                break;
+            case 3:
+                yellow -= cost;
+                break;
+            default:
+                break;
+        }
     }
 }
 

@@ -14,6 +14,7 @@ public class EventManager : MonoBehaviour
 
     public event Action<ColouredPeices.Colour> onAddPower;
     public event Action onSpecial;
+    public event Action<ColouredPeices> onTileReplacement;
 
     public void AddPower(ColouredPeices.Colour colour)
     {
@@ -31,4 +32,13 @@ public class EventManager : MonoBehaviour
         }
     }
 
+    public bool TileReplacement(ColouredPeices Change)
+    {
+        if(onTileReplacement != null)
+        {
+            onTileReplacement(Change);
+            return true;
+        }
+        return false;
+    }
 }

@@ -6,9 +6,4 @@ public class PowerButton : MonoBehaviour
 {
     public ColouredPeices.Colour Power;
 
-    private void Awake()
-    {
-       
-    }
-
 }

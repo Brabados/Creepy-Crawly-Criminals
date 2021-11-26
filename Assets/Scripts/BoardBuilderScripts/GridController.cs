@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class GridController : MonoBehaviour
@@ -8,6 +9,13 @@ public class GridController : MonoBehaviour
     //Array of game pieces to be manipulated later
     public GamePiece[,] Board;
     public GameObject[,] Spaces;
+
+    public Button Red;
+    public Button Green;
+    public Button Blue;
+    public Button Yellow;
+
+    public ColouredPeices.Colour UsedPower;
 
     //For use to restrict the grid generation when being used for a board builder
     public bool Hold;
@@ -80,9 +88,6 @@ public class GridController : MonoBehaviour
 
             AddSpaces();
             
-            SpawnPieces(5, 5,Type.BOMB);
-            Board[5, 5].Move(5,5, FillTime);
-            (Board[5, 5] as ColouredPeices).AsignColour(ColouredPeices.Colour.RED);
             //Sets blank spaces for the game board
             for (int i = 0; i < Xsize; i++)
             {
@@ -692,33 +697,44 @@ public class GridController : MonoBehaviour
 
     public void Release()
     {
-        if (Current.Type == Type.APHID)
+        if (!Hold)
         {
-            if (AreAjacent(Current, Over))
+            if (Current.Type == Type.APHID)
             {
-                SwapPieces(Current, Over);
+                if (AreAjacent(Current, Over))
+                {
+                    SwapPieces(Current, Over);
+                }
+            }
+            else if (Current.Type == Type.ANT)
+            {
+                if (AreDiagonal(Current, Over) != 0)
+                {
+                    SwapPieces(Current, Over);
+                }
+            }
+            else if (Current.Type == Type.GRASSHOPPER)
+            {
+                if (AreHorizontalOrVertical(Current, Over))
+                {
+                    SwapPieces(Current, Over);
+                }
+            }
+            else if (Current.Type == Type.FLY)
+            {
+                if (AreHorizontalOrVertical(Current, Over) || AreDiagonal(Current, Over) != 0)
+                {
+                    SwapPieces(Current, Over);
+                }
             }
         }
-        else if (Current.Type == Type.ANT)
+        else 
         {
-            if (AreDiagonal(Current, Over) != 0)
+            if(TileReplace())
             {
-                SwapPieces(Current, Over);
+                Hold = false;
             }
-        }
-        else if (Current.Type == Type.GRASSHOPPER)
-        {
-            if(AreHorizontalOrVertical(Current,Over))
-            {
-                SwapPieces(Current, Over);
-            }
-        }
-        else if (Current.Type == Type.FLY)
-        {
-            if(AreHorizontalOrVertical(Current,Over) || AreDiagonal(Current,Over) != 0)
-            {
-                SwapPieces(Current, Over);
-            }
+
         }
     }
 
@@ -956,6 +972,20 @@ public class GridController : MonoBehaviour
             SpawnPieces(x, y, Type.EMPTY);
             return true;
         }
+        return false;
+    }
+
+    public bool TileReplace()
+    {
+        if(Current.coloured)
+        {
+            if((Current as ColouredPeices).MyColour == UsedPower)
+            {
+                EventManager.current.TileReplacement((Current as ColouredPeices));
+                return true;
+            }
+        }
+
         return false;
     }
 }

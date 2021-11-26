@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Bomb : SpecialPiece
 {
-
+    public int Strength;
     void Awake()
     {
         SetDictonary();
@@ -16,14 +16,20 @@ public class Bomb : SpecialPiece
 
     public override void SpecialAffect()
     {
-        for(int i = -1; i <= 1; i++)
+        for(int i = 0 -Strength; i <= Strength; i++)
         {
-            for (int j = -1; j <= 1; j++)
+            for (int j = 0 - Strength; j <= Strength; j++)
             {
-                if(Grid.Board[XPos + i,YPos + j] != null)
+                if (i - XPos < 0 || j - YPos < 0 || i + XPos >= Grid.Xsize || j + YPos >= Grid.Ysize)
                 {
-                    Destroy(Grid.Board[XPos + i, YPos + j].gameObject);
-                    Grid.SpawnPieces(XPos + i, YPos + j, GridController.Type.EMPTY);
+                    if (Grid.Board[XPos + i, YPos + j] != null)
+                    {
+                        if (Grid.Board[XPos + i, YPos + j].Type != GridController.Type.NONSPACE)
+                        {
+                            Destroy(Grid.Board[XPos + i, YPos + j].gameObject);
+                            Grid.SpawnPieces(XPos + i, YPos + j, GridController.Type.EMPTY);
+                        }
+                    }
                 }
             }
         }
