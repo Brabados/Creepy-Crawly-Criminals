@@ -7,6 +7,7 @@ public class Bomb : SpecialPiece
     public int Strength;
     void Awake()
     {
+        Strength = 1;
         SetDictonary();
     }
 

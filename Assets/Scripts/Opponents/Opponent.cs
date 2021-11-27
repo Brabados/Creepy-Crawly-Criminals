@@ -6,13 +6,13 @@ public class Opponent : MonoBehaviour
 {
     private string _name;
     private string _AsignedBoard;
-    private ColouredPeices.Colour _MatchPref;
+    public ColouredPeices.Colour _MatchPref;
     private float[] _ColorRatios;
     private float[] _TypeRatios;
     public int TotalHealth;
     public int CurrentHealth;
 
-    private void Awake()
+    void Start()
     {
         CurrentHealth = TotalHealth;
         EventManager.current.onAddPower += DamageOpponent;

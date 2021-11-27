@@ -7,7 +7,6 @@ public class ColourKiller : PowerBase
     GridController TheGrid;
     void Start()
     {
-        Activator.onClick.AddListener(delegate { Select(); });
         TheGrid = FindObjectOfType<GridController>();
     }
 

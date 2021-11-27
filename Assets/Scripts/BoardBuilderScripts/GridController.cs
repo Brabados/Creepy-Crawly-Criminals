@@ -40,6 +40,7 @@ public class GridController : MonoBehaviour
         NONSPACE,
         BARRIER,
         BOMB,
+        SPIDER,
         REPLACE,
         ANY,
         COUNT

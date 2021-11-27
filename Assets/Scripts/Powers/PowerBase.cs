@@ -30,6 +30,7 @@ public class PowerBase : MonoBehaviour
         PowerButton power = Activator.gameObject.GetComponent<PowerButton>();
         AssignedColour = power.Power;
         PowerPoints = FindObjectOfType<PowerManager>();
+        Activator.onClick.AddListener(delegate { Select(); });
     }
     public virtual void Select()
     {

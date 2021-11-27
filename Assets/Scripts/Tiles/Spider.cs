@@ -5,9 +5,10 @@ using UnityEngine;
 public class Spider : SpecialPiece
 {
     Opponent Opponent;
-    int Damage;
+    public int Damage;
     private void Awake()
     {
+        SetDictonary();
         if (isPasive)
         {
             EventManager.current.onSpecial += SpecialAffect;
@@ -26,6 +27,7 @@ public class Spider : SpecialPiece
                 {
                     Destroy(Grid.Board[XPos + i, YPos].gameObject);
                     Grid.SpawnPieces(XPos + i, YPos, GridController.Type.EMPTY);
+                    EventManager.current.SpecailDamage(Damage, MyColour);
                 }
             }
         }
@@ -42,5 +44,10 @@ public class Spider : SpecialPiece
             }
         }
         StartCoroutine(Grid.Filler());
+    }
+
+    private void OnDestroy()
+    {
+        EventManager.current.onSpecial -= SpecialAffect;
     }
 }
