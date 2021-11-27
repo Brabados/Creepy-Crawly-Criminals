@@ -8,10 +8,6 @@ public class Bomb : SpecialPiece
     void Awake()
     {
         SetDictonary();
-        if (isPasive)
-        {
-            EventManager.current.onSpecial += SpecialAffect;
-        }
     }
 
     public override void SpecialAffect()
