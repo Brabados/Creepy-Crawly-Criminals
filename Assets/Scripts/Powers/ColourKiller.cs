@@ -13,20 +13,23 @@ public class ColourKiller : PowerBase
 
     public override void Select()
     {
-        foreach(GamePiece n in TheGrid.Board)
+        if (PowerPoints.CheckValue(AssignedColour) >= Cost)
         {
-            if(n.coloured)
+            foreach (GamePiece n in TheGrid.Board)
             {
-                if((n as ColouredPeices).MyColour == AssignedColour)
+                if (n.coloured)
                 {
-                    TheGrid.SpawnPieces(n.XPos, n.YPos, GridController.Type.EMPTY);
-                    Destroy(n.gameObject);
-                    while(TheGrid.FillCheck())
+                    if ((n as ColouredPeices).MyColour == AssignedColour)
                     {
-                        TheGrid.ClearAllMatches();
+                        TheGrid.SpawnPieces(n.XPos, n.YPos, GridController.Type.EMPTY);
+                        Destroy(n.gameObject);
+
                     }
                 }
             }
+            StartCoroutine(TheGrid.Filler());
+            EventManager.current.PowerDrain(AssignedColour);
         }
+        
     }
 }

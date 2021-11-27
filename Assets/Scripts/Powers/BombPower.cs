@@ -33,6 +33,7 @@ public class BombPower : PowerBase
         (TheGrid.Board[x, y] as ColouredPeices).AsignColour(AssignedColour);
         (TheGrid.Board[x, y] as Bomb).Strength = Strength;
         EventManager.current.onTileReplacement -= Replace;
+        EventManager.current.PowerDrain(AssignedColour);
 
     }
 }

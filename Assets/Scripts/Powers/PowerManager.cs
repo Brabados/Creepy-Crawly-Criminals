@@ -12,7 +12,7 @@ public class PowerManager : MonoBehaviour
     {
         Grid = FindObjectOfType<GridController>();
         EventManager.current.onAddPower += AddPower;
-        EventManager.current.onTileReplacement += UsePower;
+        EventManager.current.onPowerDrain += UsePower;
     }
 
     private void AddPower(ColouredPeices.Colour colour)
@@ -54,10 +54,9 @@ public class PowerManager : MonoBehaviour
         }
     }
 
-    public void UsePower(ColouredPeices Pcolour)
+    public void UsePower(ColouredPeices.Colour Pcolour)
     {
-        ColouredPeices.Colour colour = Pcolour.MyColour;
-        switch ((int)colour)
+        switch ((int)Pcolour)
         {
             case 0:
                 red -= Grid.Red.GetComponent<PowerBase>().Cost;
@@ -74,6 +73,11 @@ public class PowerManager : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    private void OnDestroy()
+    {
+ 
     }
 }
 

@@ -190,6 +190,7 @@ public class GridController : MonoBehaviour
                 int range = Random.Range(0, 4);
                 GameObject Tile = (GameObject)Instantiate(TypeDictionary[(Type)range], Worldposition(x,-1), Quaternion.identity);
                 Tile.transform.parent = transform;
+                Tile.transform.localRotation = TypeDictionary[(Type)range].transform.rotation;
                 Board[x, 0] = Tile.GetComponent<ColouredPeices>();
                 (Board[x, 0] as ColouredPeices).Initalize(x, -1, this, (Type)range, Tile.GetComponent<MeshRenderer>());
                 Board[x, 0].Move(x, 0, FillTime);

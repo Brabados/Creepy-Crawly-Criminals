@@ -15,6 +15,7 @@ public class EventManager : MonoBehaviour
     public event Action<ColouredPeices.Colour> onAddPower;
     public event Action onSpecial;
     public event Action<ColouredPeices> onTileReplacement;
+    public event Action<ColouredPeices.Colour> onPowerDrain;
 
     public void AddPower(ColouredPeices.Colour colour)
     {
@@ -40,5 +41,13 @@ public class EventManager : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public void PowerDrain(ColouredPeices.Colour colour)
+    {
+        if(onPowerDrain != null)
+        {
+            onPowerDrain(colour);
+        }
     }
 }
