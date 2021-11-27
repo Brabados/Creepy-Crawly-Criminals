@@ -20,7 +20,7 @@ public class Bomb : SpecialPiece
         {
             for (int j = 0 - Strength; j <= Strength; j++)
             {
-                if (i - XPos < 0 || j - YPos < 0 || i + XPos >= Grid.Xsize || j + YPos >= Grid.Ysize)
+                if (!(i - XPos < 0 || j - YPos < 0 ) || !(i + XPos >= Grid.Xsize || j + YPos >= Grid.Ysize))
                 {
                     if (Grid.Board[XPos + i, YPos + j] != null)
                     {

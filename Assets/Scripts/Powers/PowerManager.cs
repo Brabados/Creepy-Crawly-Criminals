@@ -57,20 +57,19 @@ public class PowerManager : MonoBehaviour
     public void UsePower(ColouredPeices Pcolour)
     {
         ColouredPeices.Colour colour = Pcolour.MyColour;
-        int cost = 0;
         switch ((int)colour)
         {
             case 0:
                 red -= Grid.Red.GetComponent<PowerBase>().Cost;
                 break;
             case 1:
-                green -= cost;
+                green -= Grid.Green.GetComponent<PowerBase>().Cost; ;
                 break; 
             case 2:
-                blue -= cost;
+                blue -= Grid.Blue.GetComponent<PowerBase>().Cost; ;
                 break;
             case 3:
-                yellow -= cost;
+                yellow -= Grid.Yellow.GetComponent<PowerBase>().Cost; ;
                 break;
             default:
                 break;
