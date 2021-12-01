@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
     public int turncount;
     public Opponent Opponent;
     public Text DisplayTurns;
+    public Text WinLose;
+    private int _state = -1;
 
 
     private void Start()
@@ -17,13 +20,15 @@ public class GameController : MonoBehaviour
     }
     private void Update()
     {
-        if(turncount <=0)
+        if(turncount <=0 && _state == -1)
         {
-            Debug.LogError("GAME OVER: You Lose");
+            StartCoroutine(GameOver(0));
+
+
         }
-        else if(Opponent.CurrentHealth <=0)
+        else if(Opponent.CurrentHealth <=0 && _state == -1)
         {
-            Debug.LogError("GAME OVER: You Win");
+            StartCoroutine( GameOver(1));
         }
     }
 
@@ -36,5 +41,23 @@ public class GameController : MonoBehaviour
         {
             EventManager.current.Special();
         }
+    }
+    public IEnumerator GameOver(int state)
+    {
+        if (state == 0)
+        {
+            WinLose.text = "GAME OVER: You Lose";
+            yield return new WaitForSeconds(5);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
+        }
+        else
+        {
+            WinLose.text = "GAME OVER: You Win";
+            yield return new WaitForSeconds(5);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
+        }
+        _state = state;
     }
 }

@@ -9,7 +9,7 @@ public class LoadButton : MonoBehaviour
 
     public void Load()
     {
-        DirectoryInfo dir = new DirectoryInfo(Application.dataPath + "/Resources/");
+        DirectoryInfo dir = new DirectoryInfo(Application.dataPath + "/StreamingAssets/");
         FileInfo[] info = dir.GetFiles("*.board");
         BoardData NewBoard = SaveSystem.LoadBoard(info[Random.Range(0,info.Length - 1)].FullName);
 

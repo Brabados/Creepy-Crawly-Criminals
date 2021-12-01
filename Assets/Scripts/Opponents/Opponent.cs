@@ -21,11 +21,11 @@ public class Opponent : MonoBehaviour
 
     public void DamageOpponent(ColouredPeices.Colour colour)
     {
-        if(colour == _MatchPref)
+        if (colour == _MatchPref)
         {
             CurrentHealth = CurrentHealth - 2;
         }
-        else 
+        else
         {
             CurrentHealth--;
         }
@@ -33,7 +33,7 @@ public class Opponent : MonoBehaviour
 
     public void ExtraDamage(int amount, ColouredPeices.Colour colour)
     {
-        if(colour == _MatchPref)
+        if (colour == _MatchPref)
         {
             CurrentHealth = CurrentHealth - (2 * amount);
         }

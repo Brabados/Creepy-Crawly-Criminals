@@ -18,7 +18,6 @@ public static class SaveSystem
 
     public static BoardData LoadBoard(string filePath)
     {
-        Resources.Load(filePath);
         if(File.Exists(filePath))
         {
             BinaryFormatter Formatter = new BinaryFormatter();
