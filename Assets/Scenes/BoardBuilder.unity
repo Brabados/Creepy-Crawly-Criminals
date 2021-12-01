@@ -536,6 +536,10 @@ PrefabInstance:
       propertyPath: SpacePrefab
       value: 
       objectReference: {fileID: 4432139628981422372}
+    - target: {fileID: 2920190116581596182, guid: e00d3f20f2caf1a4f92366c87d604b22, type: 3}
+      propertyPath: _GamePeiceTypePrefabs.Array.data[5].Prefab
+      value: 
+      objectReference: {fileID: 3433762999848309275, guid: a6c6d4d38077661409088e468da49e46, type: 3}
     - target: {fileID: 2920190116581596183, guid: e00d3f20f2caf1a4f92366c87d604b22, type: 3}
       propertyPath: m_Name
       value: Grid

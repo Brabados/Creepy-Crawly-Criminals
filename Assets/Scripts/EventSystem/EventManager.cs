@@ -17,6 +17,7 @@ public class EventManager : MonoBehaviour
     public event Action<ColouredPeices> onTileReplacement;
     public event Action<ColouredPeices.Colour> onPowerDrain;
     public event Action<int, ColouredPeices.Colour> onSpecialDamage;
+    public event Action<int> OnTurnMod;
 
     public void AddPower(ColouredPeices.Colour colour)
     {
@@ -57,6 +58,14 @@ public class EventManager : MonoBehaviour
         if(onSpecialDamage != null)
         {
             onSpecialDamage(damage, colour);
+        }
+    }
+
+    public void TurnMod(int turn)
+    {
+        if(OnTurnMod != null)
+        {
+            OnTurnMod(turn);
         }
     }
 }

@@ -7,7 +7,7 @@ public static class SaveSystem
     public static void SaveBoard(GridController Save, string BoardName)
     {
         BinaryFormatter Formatter = new BinaryFormatter();
-        string file = Application.dataPath + "/Boards/" + BoardName + ".board";
+        string file = Application.dataPath + "/Data/Boards/" + BoardName + ".board";
         FileStream stream = new FileStream(file, FileMode.Create);
 
         BoardData ToSave = new BoardData(Save);
@@ -18,6 +18,7 @@ public static class SaveSystem
 
     public static BoardData LoadBoard(string filePath)
     {
+        Resources.Load(filePath);
         if(File.Exists(filePath))
         {
             BinaryFormatter Formatter = new BinaryFormatter();

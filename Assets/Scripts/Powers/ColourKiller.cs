@@ -8,6 +8,7 @@ public class ColourKiller : PowerBase
     void Start()
     {
         TheGrid = FindObjectOfType<GridController>();
+        MyDiscription = "Removes all tiles of this colour.";
     }
 
     public override void Select()
@@ -21,7 +22,7 @@ public class ColourKiller : PowerBase
                     if ((n as ColouredPeices).MyColour == AssignedColour)
                     {
                         TheGrid.SpawnPieces(n.XPos, n.YPos, GridController.Type.EMPTY);
-                        Destroy(n.gameObject);
+                        n.Clear();
 
                     }
                 }

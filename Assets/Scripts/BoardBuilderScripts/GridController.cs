@@ -69,7 +69,7 @@ public class GridController : MonoBehaviour
     public GamePiece Current;
     public GamePiece Over;
 
-    void Start()
+    private void Awake()
     {
         //Initalizing dictonarys for use in code from the modified inspector arrays
         TypeDictionary = new Dictionary<Type, GameObject>();
@@ -81,39 +81,9 @@ public class GridController : MonoBehaviour
                 TypeDictionary.Add(_GamePeiceTypePrefabs[i].type, _GamePeiceTypePrefabs[i].Prefab);
             }
         }
-
-
-
-        if (!Hold)
-        {
-
-            AddSpaces();
-            
-            //Sets blank spaces for the game board
-            for (int i = 0; i < Xsize; i++)
-            {
-                for (int j = 0; j < Ysize; j++)
-                {
-                    //Instanciates an instance of each space
-                    if (Board[i, j] == null)
-                    {
-                        SpawnPieces(i, j, Type.EMPTY);
-                    }
-
-
-                    if (Board[i, j].moveable)
-                    {
-                        Board[i, j].Move(i, j, FillTime);
-                    }
-
-                }
-            }
-
-            StartCoroutine(Filler());
-        }
-
+        LoadButton load = GetComponent<LoadButton>();
+        load.Load();
     }
-
     public IEnumerator Filler()
     {
         bool needsfill = true;
@@ -126,10 +96,6 @@ public class GridController : MonoBehaviour
                 yield return new WaitForSeconds(FillTime);
             }
             needsfill = ClearAllMatches();
-            if(!needsfill)
-            {
-                EventManager.current.Special();
-            }
         }
     }
 
@@ -239,6 +205,16 @@ public class GridController : MonoBehaviour
 
     public Vector3 Worldposition(int x, int y)
     {
+        if (x >= 0 && x < Xsize && y >= 0 && y < Ysize)
+        {
+            if (Board[x, y] != null)
+            {
+                if (Board[x, y].Type == Type.BARRIER)
+                {
+                    return new Vector3(x + (x * 3), y + (y * 3), 0);
+                }
+            }
+        }
         return new Vector3(x + (x * 3), y + (y * 3), 0);
     }
 
@@ -246,6 +222,7 @@ public class GridController : MonoBehaviour
     {
         GameObject Tile = (GameObject)Instantiate(TypeDictionary[type], Vector3.zero, Quaternion.identity);
         Tile.transform.parent = transform;
+        Tile.transform.localRotation = TypeDictionary[type].transform.rotation;
         if (type != Type.EMPTY && type != Type.BARRIER && type != Type.NONSPACE)
         {
             Board[x, y] = Tile.GetComponent<ColouredPeices>();
@@ -525,6 +502,7 @@ public class GridController : MonoBehaviour
                     TileB.Move(TileAX, TileAY, FillTime);
                     ClearAllMatches();
                     StartCoroutine(Filler());
+                    EventManager.current.TurnMod(-1);
                 }
                 else
                 {
@@ -555,6 +533,7 @@ public class GridController : MonoBehaviour
                             TileA.Move(TileAX, TileAY, FillTime);
                             ClearAllMatches();
                             StartCoroutine(Filler());
+                            EventManager.current.TurnMod(-1);
                         }
                         else
                         {
@@ -572,6 +551,7 @@ public class GridController : MonoBehaviour
                             TileA.Move(TileAX, TileAY, FillTime);
                             ClearAllMatches();
                             StartCoroutine(Filler());
+                            EventManager.current.TurnMod(-1);
                         }
                     }
                     else
@@ -593,6 +573,7 @@ public class GridController : MonoBehaviour
                             TileA.Move(TileAX, TileAY, FillTime);
                             ClearAllMatches();
                             StartCoroutine(Filler());
+                            EventManager.current.TurnMod(-1);
                         }
                         else
                         {
@@ -610,6 +591,7 @@ public class GridController : MonoBehaviour
                             TileA.Move(TileAX, TileAY, FillTime);
                             ClearAllMatches();
                             StartCoroutine(Filler());
+                            EventManager.current.TurnMod(-1);
                         }
                     }
                 }
@@ -633,6 +615,7 @@ public class GridController : MonoBehaviour
                         TileA.Move(TileAX, TileAY, FillTime);
                         ClearAllMatches();
                         StartCoroutine(Filler());
+                        EventManager.current.TurnMod(-1);
                     }
                     else if (diag == 2)
                     {
@@ -649,6 +632,7 @@ public class GridController : MonoBehaviour
                         TileA.Move(TileAX, TileAY, FillTime);
                         ClearAllMatches();
                         StartCoroutine(Filler());
+                        EventManager.current.TurnMod(-1);
                     }
                     else if (diag == 3)
                     {
@@ -665,6 +649,7 @@ public class GridController : MonoBehaviour
                         TileA.Move(TileAX, TileAY, FillTime);
                         ClearAllMatches();
                         StartCoroutine(Filler());
+                        EventManager.current.TurnMod(-1);
                     }
                     else
                     {
@@ -681,6 +666,7 @@ public class GridController : MonoBehaviour
                         TileA.Move(TileAX, TileAY, FillTime);
                         ClearAllMatches();
                         StartCoroutine(Filler());
+                        EventManager.current.TurnMod(-1);
                     }
                 }
             }
@@ -972,6 +958,7 @@ public class GridController : MonoBehaviour
         {
             Board[x, y].Clear();
             SpawnPieces(x, y, Type.EMPTY);
+            ClearBarriers(x, y);
             return true;
         }
         return false;
@@ -989,5 +976,31 @@ public class GridController : MonoBehaviour
         }
 
         return false;
+    }
+
+    public void ClearBarriers(int x, int y)
+    {
+        for(int NewX = x -1; NewX <= x + 1; NewX++)
+        {
+            if(NewX < Xsize && NewX >= 0 && NewX != x)
+            {
+                if(Board[NewX,y].Type == Type.BARRIER)
+                {
+                    Board[NewX, y].Clear();
+                    SpawnPieces(NewX, y, Type.EMPTY);
+                }
+            }
+        }
+        for (int NewY = y - 1; NewY <= y + 1; NewY++)
+        {
+            if (NewY < Ysize && NewY >= 0 && NewY != y)
+            {
+                if (Board[x, NewY].Type == Type.BARRIER)
+                {
+                    Board[x, NewY].Clear();
+                    SpawnPieces(x, NewY, Type.EMPTY);
+                }
+            }
+        }
     }
 }

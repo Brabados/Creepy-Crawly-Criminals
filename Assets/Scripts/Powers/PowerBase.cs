@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class PowerBase : MonoBehaviour
 {
     private string _Name;
-    private string _Discription;
+    public string MyDiscription;
     public int Cost;
     public PowerManager PowerPoints;
 
@@ -15,10 +15,6 @@ public class PowerBase : MonoBehaviour
         get { return _Name; }
     }
 
-    public string Discription
-    {
-        get { return _Discription; }
-    }
 
     public bool SelectTile;
     public bool Activate;

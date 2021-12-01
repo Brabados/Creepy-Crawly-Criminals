@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SpecialPiece : ColouredPeices
 {
+    public string discription;
     public bool isPasive;
     public bool isActive;
 

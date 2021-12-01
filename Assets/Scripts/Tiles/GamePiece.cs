@@ -11,6 +11,7 @@ public class GamePiece : MonoBehaviour
     private GridController _Grid;
     private GridController.Type _Type;
     private IEnumerator _MoveCoroutine;
+    public AnimationClip ClearAnimation;
 
 
     public bool moveable;
@@ -111,17 +112,20 @@ public class GamePiece : MonoBehaviour
 
     public void Clear()
     {
-        _BeingCleared = true;
-        StartCoroutine(ClearCoroutine());
+        if (this.isActiveAndEnabled)
+        {
+            _BeingCleared = true;
+            StartCoroutine(ClearCoroutine());
+        }
     }
 
     private IEnumerator ClearCoroutine()
     {
         Animator Animation = GetComponent<Animator>();
-        if(Animation)
+        if(Animation != null)
         {
-            Animation.Play(0);
-            yield return new WaitForSeconds(Grid.FillTime);
+            Animation.Play(ClearAnimation.name);
+            yield return new WaitForSeconds(ClearAnimation.length / 2);
             Destroy(gameObject);
         }
         else 

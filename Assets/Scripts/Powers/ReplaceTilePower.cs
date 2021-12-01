@@ -9,6 +9,9 @@ public class ReplaceTilePower : PowerBase
     void Start()
     {
         TheGrid = FindObjectOfType<GridController>();
+        SpecialPiece MyType = (TheGrid.SpawnPieces(0, 0, type) as SpecialPiece);
+        MyDiscription = MyType.discription;
+        Destroy(MyType.gameObject);
     }
 
     public override void Select()

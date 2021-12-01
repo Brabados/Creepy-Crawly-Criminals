@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Opponent : MonoBehaviour
 {
-    private string _name;
-    private string _AsignedBoard;
+    public string _name;
+    public string _AsignedBoard;
     public ColouredPeices.Colour _MatchPref;
     private float[] _ColorRatios;
     private float[] _TypeRatios;

@@ -14,6 +14,10 @@ public class Spider : SpecialPiece
             EventManager.current.onSpecial += SpecialAffect;
         }
         Opponent = FindObjectOfType<Opponent>();
+
+        discription = "Creates a Spider tile at selected tiles location of same colour as power." + System.Environment.NewLine +
+            "A spider tile destroys an adjacent fly tile to do damage after each turn until it is made part of a match and removed";
+
     }
 
     // Update is called once per frame
@@ -25,7 +29,7 @@ public class Spider : SpecialPiece
             {
                 if(Grid.Board[XPos + i,YPos].Type == GridController.Type.FLY)
                 {
-                    Destroy(Grid.Board[XPos + i, YPos].gameObject);
+                    Grid.Board[XPos + i, YPos].Clear();
                     Grid.SpawnPieces(XPos + i, YPos, GridController.Type.EMPTY);
                     EventManager.current.SpecailDamage(Damage, MyColour);
                 }
@@ -37,7 +41,7 @@ public class Spider : SpecialPiece
             {
                 if (Grid.Board[XPos, YPos + i].Type == GridController.Type.FLY)
                 {
-                    Destroy(Grid.Board[XPos, YPos + i].gameObject);
+                    Grid.Board[XPos, YPos + i].Clear();
                     Grid.SpawnPieces(XPos, YPos + i, GridController.Type.EMPTY);
                     EventManager.current.SpecailDamage(Damage, MyColour);
                 }

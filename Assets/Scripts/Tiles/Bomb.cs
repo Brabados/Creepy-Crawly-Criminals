@@ -9,6 +9,10 @@ public class Bomb : SpecialPiece
     {
         Strength = 1;
         SetDictonary();
+
+        discription = "Creates a Bomb tile at selected tiles location of same colour as power."
+            + System.Environment.NewLine +
+            "A Bomb tile destroys all 8 tiles around it when matched. ";
     }
 
     public override void SpecialAffect()
@@ -17,14 +21,17 @@ public class Bomb : SpecialPiece
         {
             for (int j = 0 - Strength; j <= Strength; j++)
             {
-                if (!(i - XPos < 0 || j - YPos < 0 ) || !(i + XPos >= Grid.Xsize || j + YPos >= Grid.Ysize))
+                if (Grid.Xsize != 0 && Grid.Ysize != 0)
                 {
-                    if (Grid.Board[XPos + i, YPos + j] != null)
+                    if (XPos - i >= 0 && YPos - j >= 0 && XPos + i < Grid.Xsize &&  YPos + j < Grid.Ysize)
                     {
-                        if (Grid.Board[XPos + i, YPos + j].Type != GridController.Type.NONSPACE)
+                        if (Grid.Board[XPos + i, YPos + j] != null)
                         {
-                            Destroy(Grid.Board[XPos + i, YPos + j].gameObject);
-                            Grid.SpawnPieces(XPos + i, YPos + j, GridController.Type.EMPTY);
+                            if (Grid.Board[XPos + i, YPos + j].Type != GridController.Type.NONSPACE)
+                            {
+                                Grid.Board[XPos + i, YPos + j].Clear();
+                                Grid.SpawnPieces(XPos + i, YPos + j, GridController.Type.EMPTY);
+                            }
                         }
                     }
                 }
